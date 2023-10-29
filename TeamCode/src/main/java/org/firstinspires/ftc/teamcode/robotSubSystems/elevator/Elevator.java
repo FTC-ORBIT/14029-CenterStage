@@ -10,8 +10,8 @@ public class Elevator {
         elevMotor = hardwareMap.get(DcMotor.class, "elevMotor");
         elevMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
     }
-    public void operate() {
-
+    public void operate(double power) {
+        elevMotor.setPower(power);
     }
 
     public int getMotorPos() {
