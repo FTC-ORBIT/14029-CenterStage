@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode.robotSubSystems.drivetrain;
 
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import org.firstinspires.ftc.teamcode.sensors.Gyro;
@@ -19,8 +20,8 @@ public class Drivetrain {
         for (final  DcMotor dtMotors: dtMotors) {
             dtMotors.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         }
-        //dtMotors[].setDirection(DcMotorSimple.Direction.REVERSE);
-        //dtMotors[].setDirection(DcMotorSimple.Direction.REVERSE);
+        dtMotors[2].setDirection(DcMotorSimple.Direction.REVERSE);
+        dtMotors[3].setDirection(DcMotorSimple.Direction.REVERSE);
     }
 
     public void operate(Vector velocity, double rotation) {
