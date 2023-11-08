@@ -45,6 +45,16 @@ public class Drivetrain {
         dtMotors[3].setPower(DrivetrainConstants.power * (rbPower / highestPower));
     }
 
+    public static float getXEncoderPos(){
+        return 0;
+    }
+    //lf.getCurrentPosition()
+    public static float getYEncoderPos(){
+        return 0;
+    }
+    //lb.getCurrentPosition()
+
+
     public void stop() {
         for (DcMotor motor : dtMotors) {
             motor.setPower(0);
