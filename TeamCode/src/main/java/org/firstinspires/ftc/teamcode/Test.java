@@ -29,7 +29,7 @@ public class Test extends OpMode {
         GlobalData.deltaTime = GlobalData.currentTime - GlobalData.lastTime;
         GlobalData.lastTime = GlobalData.currentTime;
 
-        elevator.operate(gamepad1.right_stick_y);
+
         drivetrain.operate(new Vector(gamepad1.left_stick_x, -gamepad1.left_stick_y), gamepad1.right_trigger - gamepad1.left_trigger);
     }
 }

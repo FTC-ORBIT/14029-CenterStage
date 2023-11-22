@@ -9,7 +9,7 @@ import org.firstinspires.ftc.teamcode.utils.Vector;
 
 public class Drivetrain {
 
-    public final DcMotor[] dtMotors = new DcMotor[4];
+    private static final DcMotor[] dtMotors = new DcMotor[4];
 
     public void init(HardwareMap hardwareMap) {
         dtMotors[0] = hardwareMap.get(DcMotor.class, "lf");
@@ -46,11 +46,11 @@ public class Drivetrain {
     }
 
     public static float getXEncoderPos(){
-        return 0;
+        return dtMotors[0].getCurrentPosition();//TODO: change to the right motor
     }
     //lf.getCurrentPosition()
     public static float getYEncoderPos(){
-        return 0;
+        return dtMotors[1].getCurrentPosition();//TODO: change to the right motor
     }
     //lb.getCurrentPosition()
 

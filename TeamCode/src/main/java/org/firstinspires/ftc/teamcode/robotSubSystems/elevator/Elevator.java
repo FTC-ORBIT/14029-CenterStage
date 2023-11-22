@@ -3,19 +3,42 @@ package org.firstinspires.ftc.teamcode.robotSubSystems.elevator;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
+import org.firstinspires.ftc.teamcode.utils.PID;
+
 public class Elevator {
-    public DcMotor elevMotor;
+    private static DcMotor leftMotor;
+    private static DcMotor rightMotor;
+
+    private static final PID changeLevelPID = new PID(
+            ElevatorConstance.changeLevelKp,
+            ElevatorConstance.changeLevelKi,
+            ElevatorConstance.changeLevelKd,
+            ElevatorConstance.changeLevelKf,
+            ElevatorConstance.changeLevelIzone,
+            ElevatorConstance.changeLevelMaxSpeed,
+            ElevatorConstance.changeLevelMinSpeed);
+
 
     public void init(HardwareMap hardwareMap) {
-        elevMotor = hardwareMap.get(DcMotor.class, "elevMotor");
-        elevMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        leftMotor = hardwareMap.get(DcMotor.class, "left elevator motor");
+        leftMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        rightMotor = hardwareMap.get(DcMotor.class, "right elevator motor");
+        rightMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
     }
-    public void operate(double power) {
-        elevMotor.setPower(power);
+    public void operate(ElevatorLevel wantedLevel) {
+
     }
 
-    public int getMotorPos() {
-        return elevMotor.getCurrentPosition();
+    public int getElevatorPos() {
+        return leftMotor.getCurrentPosition();
+    }
+
+    private static void setFloor(int wantedPos){
+
+        changeLevelPID.setWanted(wantedPos);
+
+        leftMotor.setPower(changeLevelPID.update(leftMotor.getCurrentPosition()));
+        rightMotor.setPower(changeLevelPID.update(leftMotor.getCurrentPosition()));
     }
 
 }
