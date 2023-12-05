@@ -12,11 +12,22 @@ public class PoseTracker {
         return pose;
     }
 
+    private static double xErrorVal = 0;
+    private static double yErrorVal = 0;
+
+    private static double lastAngle = 0;
+
+
     public static void update(){
-        final Vector encoders = new Vector(Drivetrain.getXEncoderPos(), Drivetrain.getYEncoderPos());
+        final Vector encoders = new Vector(
+                Drivetrain.getXEncoderPos() - xErrorVal * (Gyro.getAngle() - lastAngle),
+                Drivetrain.getYEncoderPos() - yErrorVal * (Gyro.getAngle() - lastAngle));
+
         encoders.rotate(Angle.wrapAngle0_360(Gyro.getAngle()));
 
         pose.setVector(encoders);
         pose.setAngle(Angle.wrapAngle0_360(Gyro.getAngle()));
+
+        lastAngle = Gyro.getAngle();
     }
 }
