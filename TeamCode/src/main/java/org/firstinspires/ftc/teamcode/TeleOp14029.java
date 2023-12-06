@@ -13,15 +13,12 @@ import org.firstinspires.ftc.teamcode.utils.Vector;
 @TeleOp(name = "TeleOp")
 public class TeleOp14029 extends OpMode {
     private final ElapsedTime timer = new ElapsedTime();
-    Drivetrain drivetrain = new Drivetrain();
-    Elevator elevator = new Elevator();
 
 
     @Override
     public void init() {
         Gyro.init(hardwareMap);
-        drivetrain.init(hardwareMap);
-        elevator.init(hardwareMap);
+        Drivetrain.init(hardwareMap);
     }
 
     @Override
@@ -30,6 +27,6 @@ public class TeleOp14029 extends OpMode {
         GlobalData.deltaTime = GlobalData.currentTime - GlobalData.lastTime;
         GlobalData.lastTime = GlobalData.currentTime;
 
-        drivetrain.operate(new Vector(-gamepad1.left_stick_x, -gamepad1.left_stick_y), gamepad1.right_trigger - gamepad1.left_trigger);
+        Drivetrain.operate(gamepad1);
     }
 }
