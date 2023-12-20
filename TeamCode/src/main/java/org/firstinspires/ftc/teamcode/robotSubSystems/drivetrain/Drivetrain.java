@@ -6,6 +6,7 @@ import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Gamepad;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
+import org.firstinspires.ftc.teamcode.robotSubSystems.poseTracker.PoseTracker;
 import org.firstinspires.ftc.teamcode.sensors.Gyro;
 import org.firstinspires.ftc.teamcode.utils.Angle;
 import org.firstinspires.ftc.teamcode.utils.PID;
@@ -43,12 +44,35 @@ public class Drivetrain {
         dtMotors[3].setPower(Math.max(DrivetrainConstants.minDriveSpeed, Math.min(DrivetrainConstants.maxDriveSpeed,vectorGamepad.y + vectorGamepad.x - gamepad.right_trigger + gamepad.left_trigger)));
     }
 
-    private static PID moveRobotPID = new PID(DrivetrainConstants.moveRobotKp,DrivetrainConstants.moveRobotKi,DrivetrainConstants.moveRobotKd,DrivetrainConstants.moveRobotKf,DrivetrainConstants.moveRobotIzone,DrivetrainConstants.moveRobotMaxSpeed,DrivetrainConstants.moveRobotMinSpeed);
+    private static PID moveRobotLfPID = new PID(DrivetrainConstants.moveRobotLfKp,DrivetrainConstants.moveRobotLfKi,DrivetrainConstants.moveRobotLfKd,DrivetrainConstants.moveRobotLfKf,DrivetrainConstants.moveRobotLfIzone,DrivetrainConstants.moveRobotLfMaxSpeed,DrivetrainConstants.moveRobotLfMinSpeed);
+    private static PID moveRobotRfPID = new PID(DrivetrainConstants.moveRobotRfKp,DrivetrainConstants.moveRobotRfKi,DrivetrainConstants.moveRobotRfKd,DrivetrainConstants.moveRobotRfKf,DrivetrainConstants.moveRobotRfIzone,DrivetrainConstants.moveRobotRfMaxSpeed,DrivetrainConstants.moveRobotRfMinSpeed);
+
     private static PID turnRobotPID = new PID(DrivetrainConstants.turnRobotKp,DrivetrainConstants.turnRobotKi,DrivetrainConstants.turnRobotKd,DrivetrainConstants.turnRobotKf,DrivetrainConstants.turnRobotIzone,DrivetrainConstants.turnRobotMaxSpeed,DrivetrainConstants.turnRobotMinSpeed);
     public static void moveRobot(Pose2D wanted){
         wanted.vector.rotate(Angle.wrapAngle0_360(Gyro.getAngle()));
-        final double lfRbWantedPosition = wanted.getY() + wanted.getX();
-        final double lbRfWantedPosition = wanted.getY() - wanted.getX();
+        moveRobotLfPID.setWanted(wanted.getY() + wanted.getX());
+        moveRobotRfPID.setWanted(wanted.getY() - wanted.getX());
+
+        double lfPower = moveRobotLfPID.update(PoseTracker.getPose().getY() + PoseTracker.getPose().getX());
+        double rfPower = moveRobotRfPID.update(PoseTracker.getPose().getY() - PoseTracker.getPose().getX());
+
+        final double maxPower = Math.max(lfPower, rfPower);
+
+        lfPower /= maxPower;
+        rfPower /= maxPower;
+
+
+//        turn robot pid
+
+        turnRobotPID.setWanted(wanted.getAngle());
+
+        double rotationPower = turnRobotPID.update(PoseTracker.getPose().getAngle());
+
+        dtMotors[0].setPower(lfPower + rotationPower);
+        dtMotors[1].setPower(rfPower - rotationPower);
+        dtMotors[2].setPower(rfPower + rotationPower);
+        dtMotors[3].setPower(lfPower - rotationPower);
+
 
     }
 

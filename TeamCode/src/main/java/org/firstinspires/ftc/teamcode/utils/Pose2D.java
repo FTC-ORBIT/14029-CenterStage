@@ -34,6 +34,8 @@ public class Pose2D {
         return vector.y;
     }
 
+    public double getAngle(){return angle;}
+
     public void reset() {
         setX(0);
         setY(0);
