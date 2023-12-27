@@ -26,7 +26,7 @@ public class Drivetrain {
         for (final  DcMotor dtMotors: dtMotors) {
             dtMotors.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         }
-        dtMotors[2].setDirection(DcMotorSimple.Direction.REVERSE);
+        dtMotors[0].setDirection(DcMotorSimple.Direction.REVERSE);
         dtMotors[3].setDirection(DcMotorSimple.Direction.REVERSE);
     }
 
@@ -35,13 +35,13 @@ public class Drivetrain {
     }
 
     private static void drive(Gamepad gamepad) {
-        final Vector vectorGamepad = new Vector(gamepad.left_stick_x, gamepad.left_stick_y);
-        vectorGamepad.rotate(Angle.wrapAngle0_360(Gyro.getAngle()));
+        final Vector vectorGamepad = new Vector(gamepad.left_stick_x, -gamepad.left_stick_y);
+//        vectorGamepad.rotate(Angle.wrapAngle0_360(Gyro.getAngle()));
 
-        dtMotors[0].setPower(Math.max(DrivetrainConstants.minDriveSpeed, Math.min(DrivetrainConstants.maxDriveSpeed,vectorGamepad.y + vectorGamepad.x + gamepad.right_trigger - gamepad.left_trigger)));
-        dtMotors[1].setPower(Math.max(DrivetrainConstants.minDriveSpeed, Math.min(DrivetrainConstants.maxDriveSpeed,vectorGamepad.y - vectorGamepad.x + gamepad.right_trigger - gamepad.left_trigger)));
-        dtMotors[2].setPower(Math.max(DrivetrainConstants.minDriveSpeed, Math.min(DrivetrainConstants.maxDriveSpeed,vectorGamepad.y - vectorGamepad.x - gamepad.right_trigger + gamepad.left_trigger)));
-        dtMotors[3].setPower(Math.max(DrivetrainConstants.minDriveSpeed, Math.min(DrivetrainConstants.maxDriveSpeed,vectorGamepad.y + vectorGamepad.x - gamepad.right_trigger + gamepad.left_trigger)));
+        dtMotors[0].setPower(Math.signum(vectorGamepad.y + vectorGamepad.x + gamepad.right_trigger - gamepad.left_trigger) * Math.max(DrivetrainConstants.minDriveSpeed, Math.min(DrivetrainConstants.maxDriveSpeed,Math.abs(vectorGamepad.y + vectorGamepad.x + gamepad.right_trigger - gamepad.left_trigger))));
+        dtMotors[1].setPower(Math.signum(vectorGamepad.y - vectorGamepad.x + gamepad.right_trigger - gamepad.left_trigger) *Math.max(DrivetrainConstants.minDriveSpeed, Math.min(DrivetrainConstants.maxDriveSpeed,Math.abs(vectorGamepad.y - vectorGamepad.x + gamepad.right_trigger - gamepad.left_trigger))));
+        dtMotors[2].setPower(Math.signum(vectorGamepad.y - vectorGamepad.x - gamepad.right_trigger + gamepad.left_trigger) *Math.max(DrivetrainConstants.minDriveSpeed, Math.min(DrivetrainConstants.maxDriveSpeed,Math.abs(vectorGamepad.y - vectorGamepad.x - gamepad.right_trigger + gamepad.left_trigger))));
+        dtMotors[3].setPower(Math.signum(vectorGamepad.y + vectorGamepad.x - gamepad.right_trigger + gamepad.left_trigger) *Math.max(DrivetrainConstants.minDriveSpeed, Math.min(DrivetrainConstants.maxDriveSpeed,Math.abs(vectorGamepad.y + vectorGamepad.x - gamepad.right_trigger + gamepad.left_trigger))));
     }
 
     private static PID moveRobotLfPID = new PID(DrivetrainConstants.moveRobotLfKp,DrivetrainConstants.moveRobotLfKi,DrivetrainConstants.moveRobotLfKd,DrivetrainConstants.moveRobotLfKf,DrivetrainConstants.moveRobotLfIzone,DrivetrainConstants.moveRobotLfMaxSpeed,DrivetrainConstants.moveRobotLfMinSpeed);

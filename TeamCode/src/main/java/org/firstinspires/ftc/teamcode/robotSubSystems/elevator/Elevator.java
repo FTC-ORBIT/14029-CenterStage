@@ -20,12 +20,12 @@ public class Elevator {
 
 
     public void init(HardwareMap hardwareMap) {
-        leftMotor = hardwareMap.get(DcMotor.class, "left elevator motor");
+        leftMotor = hardwareMap.get(DcMotor.class, "1");
         leftMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        rightMotor = hardwareMap.get(DcMotor.class, "right elevator motor");
+        rightMotor = hardwareMap.get(DcMotor.class, "0");
         rightMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
     }
-    public void operate(ElevatorLevel wantedLevel) {
+    public void operate(ElevatorState wantedLevel) {
 
     }
 
