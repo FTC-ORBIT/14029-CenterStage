@@ -19,18 +19,26 @@ public class Elevator {
             ElevatorConstance.changeLevelMinSpeed);
 
 
-    public void init(HardwareMap hardwareMap) {
-        leftMotor = hardwareMap.get(DcMotor.class, "1");
-        leftMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+    public static void init(HardwareMap hardwareMap) {
         rightMotor = hardwareMap.get(DcMotor.class, "0");
+        leftMotor = hardwareMap.get(DcMotor.class, "1");
         rightMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        leftMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
     }
-    public void operate(ElevatorState wantedLevel) {
+    public static void operate(ElevatorState wantedLevel) {
 
     }
+    private static int encoderResetVal = 0;
+    public static int getElevatorPos() {
+        return rightMotor.getCurrentPosition() - encoderResetVal;
+    }
 
-    public int getElevatorPos() {
-        return leftMotor.getCurrentPosition();
+    public static int getElevatorPosL() {
+        return leftMotor.getCurrentPosition() ;
+    }
+
+    public static void resetEncoder(){
+        encoderResetVal = rightMotor.getCurrentPosition();
     }
 
     private static void setFloor(int wantedPos){

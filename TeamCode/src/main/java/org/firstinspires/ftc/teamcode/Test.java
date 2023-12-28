@@ -24,15 +24,19 @@ public class Test extends OpMode {
 //        Gyro.init(hardwareMap);
         Drivetrain.init(hardwareMap);
         Intake.init(hardwareMap);
-//        elevator.init(hardwareMap);
+        Elevator.init(hardwareMap);
+            Elevator.resetEncoder();
     }
 
     @Override
     public void loop() {
-        Drivetrain.operate(gamepad1);
+//        Drivetrain.operate(gamepad1);
 
         if (gamepad1.a){Intake.operate(IntakeState.INTAKE);}
         else {Intake.operate(IntakeState.STOP);}
+
+        telemetry.addData("", Elevator.getElevatorPos());
+        telemetry.addData("", Elevator.getElevatorPosL());
         GlobalData.currentTime = timer.milliseconds();
         GlobalData.deltaTime = GlobalData.currentTime - GlobalData.lastTime;
         GlobalData.lastTime = GlobalData.currentTime;
