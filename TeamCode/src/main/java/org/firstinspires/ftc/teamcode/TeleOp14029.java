@@ -84,7 +84,7 @@ public class TeleOp14029 extends OpMode {
 
         Drivetrain.operate(gamepad1);
         Intake.operate(intakeState);
-        Elevator.operate(elevatorState);
+        Elevator.operate(elevatorState,gamepad1);
         Claw.operate(clawState);
 
 

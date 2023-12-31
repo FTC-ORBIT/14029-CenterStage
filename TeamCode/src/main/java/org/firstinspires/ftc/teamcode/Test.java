@@ -6,6 +6,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 import org.firstinspires.ftc.teamcode.robotData.GlobalData;
 import org.firstinspires.ftc.teamcode.robotSubSystems.drivetrain.Drivetrain;
 import org.firstinspires.ftc.teamcode.robotSubSystems.elevator.Elevator;
+import org.firstinspires.ftc.teamcode.robotSubSystems.elevator.ElevatorState;
 import org.firstinspires.ftc.teamcode.robotSubSystems.intake.Intake;
 import org.firstinspires.ftc.teamcode.robotSubSystems.intake.IntakeState;
 import org.firstinspires.ftc.teamcode.sensors.Gyro;
@@ -25,15 +26,15 @@ public class Test extends OpMode {
         Drivetrain.init(hardwareMap);
         Intake.init(hardwareMap);
         Elevator.init(hardwareMap);
-            Elevator.resetEncoder();
     }
 
     @Override
     public void loop() {
-//        Drivetrain.operate(gamepad1);
+        Drivetrain.operate(gamepad1);
 
         if (gamepad1.a){Intake.operate(IntakeState.INTAKE);}
         else {Intake.operate(IntakeState.STOP);}
+        Elevator.operate(ElevatorState.LEVEL1, gamepad1);
 
         telemetry.addData("", Elevator.getElevatorPos());
         telemetry.addData("", Elevator.getElevatorPosL());

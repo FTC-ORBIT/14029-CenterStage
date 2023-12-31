@@ -52,6 +52,6 @@ public class PID {
         prevError = currentError;
         prevTime = currentTime;
 
-        return Math.max(minSpeed,Math.min(kP * currentError + kI * integral + kD * derivative + kF * wanted, maxSpeed));
+        return Math.signum(kP * currentError + kI * integral + kD * derivative + kF * wanted) * Math.max(minSpeed,Math.min(Math.abs(kP * currentError + kI * integral + kD * derivative + kF * wanted), maxSpeed));
     }
 }
