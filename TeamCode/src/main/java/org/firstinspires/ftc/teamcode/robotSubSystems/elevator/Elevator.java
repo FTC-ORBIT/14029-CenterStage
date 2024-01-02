@@ -11,6 +11,9 @@ public class Elevator {
     private static DcMotor leftMotor;
     private static DcMotor rightMotor;
 
+    private static ElevatorState wantedLevel = ElevatorState.INTAKE;
+    private static ElevatorState currentLevel = ElevatorState.INTAKE;
+
     private static final PID changeLevelPID = new PID(
             ElevatorConstance.changeLevelKp,
             ElevatorConstance.changeLevelKi,
@@ -31,7 +34,8 @@ public class Elevator {
     }
 
     static double power = 0;
-    public static void operate(ElevatorState wantedLevel, Gamepad gamepad) {
+    public static void operate(ElevatorState wantedState, Gamepad gamepad) {
+        wantedLevel = wantedState;
         int wantedPos = 0;
         switch (wantedLevel){
             case INTAKE:
