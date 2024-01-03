@@ -11,8 +11,7 @@ public class Elevator {
     private static DcMotor leftMotor;
     private static DcMotor rightMotor;
 
-    private static ElevatorState wantedLevel = ElevatorState.INTAKE;
-    private static ElevatorState currentLevel = ElevatorState.INTAKE;
+    private static int wantedPosition = 0;
 
     private static final PID changeLevelPID = new PID(
             ElevatorConstance.changeLevelKp,
@@ -35,9 +34,8 @@ public class Elevator {
 
     static double power = 0;
     public static void operate(ElevatorState wantedState, Gamepad gamepad) {
-        wantedLevel = wantedState;
         int wantedPos = 0;
-        switch (wantedLevel){
+        switch (wantedState){
             case INTAKE:
                 wantedPos = ElevatorConstance.intakePos;
                 break;
@@ -57,12 +55,16 @@ public class Elevator {
 
         leftMotor.setPower(-gamepad.right_stick_y);
         rightMotor.setPower(-gamepad.right_stick_y);
+
+        wantedPosition = wantedPos;
     }
     private static int encoderResetVal = 0;
     private static int encoderResetValL = 0;
     public static int getElevatorPos() {
         return rightMotor.getCurrentPosition() - encoderResetVal;
     }
+
+    public static int getWantedPos(){return wantedPosition;}
 
     public static double getElevatorPosL() {
 //        return leftMotor.getCurrentPosition() - encoderResetValL;

@@ -9,9 +9,12 @@ import org.firstinspires.ftc.teamcode.robotSubSystems.claw.Claw;
 import org.firstinspires.ftc.teamcode.robotSubSystems.claw.ClawState;
 import org.firstinspires.ftc.teamcode.robotSubSystems.drivetrain.Drivetrain;
 import org.firstinspires.ftc.teamcode.robotSubSystems.elevator.Elevator;
+import org.firstinspires.ftc.teamcode.robotSubSystems.elevator.ElevatorConstance;
 import org.firstinspires.ftc.teamcode.robotSubSystems.elevator.ElevatorState;
 import org.firstinspires.ftc.teamcode.robotSubSystems.intake.Intake;
 import org.firstinspires.ftc.teamcode.robotSubSystems.intake.IntakeState;
+import org.firstinspires.ftc.teamcode.robotSubSystems.wrist.Wrist;
+import org.firstinspires.ftc.teamcode.robotSubSystems.wrist.WristState;
 import org.firstinspires.ftc.teamcode.sensors.Gyro;
 
 @TeleOp(name = "TeleOp")
@@ -23,6 +26,7 @@ public class TeleOp14029 extends OpMode {
     ElevatorState elevatorState = ElevatorState.INTAKE;
     IntakeState intakeState = IntakeState.STOP;
     ClawState clawState = ClawState.CLOSED;
+    WristState wristState = WristState.INTAKE;
 
 
     @Override
@@ -30,13 +34,15 @@ public class TeleOp14029 extends OpMode {
         Gyro.init(hardwareMap);
         Drivetrain.init(hardwareMap);
         Intake.init(hardwareMap);
+        Wrist.init(hardwareMap);
+        Claw.init(hardwareMap);
     }
 
     @Override
     public void loop() {
-        GlobalData.currentTime = timer.milliseconds();
-        GlobalData.deltaTime = GlobalData.currentTime - GlobalData.lastTime;
-        GlobalData.lastTime = GlobalData.currentTime;
+//        GlobalData.currentTime = timer.milliseconds();
+//        GlobalData.deltaTime = GlobalData.currentTime - GlobalData.lastTime;
+//        GlobalData.lastTime = GlobalData.currentTime;
 
         if (gamepad1.a){
             state = RobotState.INTAKE;
@@ -69,16 +75,24 @@ public class TeleOp14029 extends OpMode {
                 elevatorState = ElevatorState.INTAKE;
                 intakeState = IntakeState.INTAKE;
                 clawState = ClawState.OPEN;
+                if (Elevator.getElevatorPos() < ElevatorConstance.moveBoxMaxPos){
+                    wristState = WristState.INTAKE;
+                }
                 break;
             case DROP:
                 intakeState = IntakeState.STOP;
                 clawState = ClawState.OPEN;
+                wristState = WristState.DEPLETE;
                 break;
             case TRAVEL:
                 clawState = ClawState.CLOSED;
+                if (Elevator.getElevatorPos() > ElevatorConstance.moveBoxMinPos){
+                    wristState = WristState.DEPLETE;
+                }
                 break;
             case DEPLETE:
                 intakeState = IntakeState.DEPLETE;
+                wristState = WristState.DEPLETE;
                 break;
         }
 
