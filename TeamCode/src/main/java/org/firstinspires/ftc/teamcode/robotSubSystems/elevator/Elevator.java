@@ -53,8 +53,8 @@ public class Elevator {
 
         power = changeLevelPID.update(getElevatorPos());
 
-        leftMotor.setPower(-gamepad.right_stick_y);
-        rightMotor.setPower(-gamepad.right_stick_y);
+        leftMotor.setPower(power);
+        rightMotor.setPower(power);
 
         wantedPosition = wantedPos;
     }

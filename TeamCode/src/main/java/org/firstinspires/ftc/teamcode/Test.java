@@ -31,10 +31,24 @@ public class Test extends OpMode {
     @Override
     public void loop() {
         Drivetrain.operate(gamepad1);
+        ElevatorState elevatorState = ElevatorState.LEVEL1;
+
+        if (gamepad1.dpad_down){
+            elevatorState = ElevatorState.LEVEL1;
+        }
+        if (gamepad1.dpad_right || gamepad1.dpad_left){
+            elevatorState = ElevatorState.LEVEL2;
+        }
+        if (gamepad1.dpad_up){
+            elevatorState = ElevatorState.LEVEL3;
+        }
+        if (gamepad1.b){
+            elevatorState = ElevatorState.INTAKE;
+        }
 
         if (gamepad1.a){Intake.operate(IntakeState.INTAKE);}
         else {Intake.operate(IntakeState.STOP);}
-        Elevator.operate(ElevatorState.LEVEL1, gamepad1);
+        Elevator.operate(elevatorState, gamepad1);
 
         telemetry.addData("", Elevator.getElevatorPos());
         telemetry.addData("", Elevator.getElevatorPosL());
