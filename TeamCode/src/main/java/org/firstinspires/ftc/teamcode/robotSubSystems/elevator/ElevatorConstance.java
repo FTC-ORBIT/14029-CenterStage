@@ -2,7 +2,7 @@ package org.firstinspires.ftc.teamcode.robotSubSystems.elevator;
 
 public class ElevatorConstance {
 
-    public static final double changeLevelKp = 0.001;
+    public static final double changeLevelKp = 0.01;
     public static final double changeLevelKi = 0;
     public static final double changeLevelKd = 0;
     public static final double changeLevelKf = 0;
@@ -16,7 +16,9 @@ public class ElevatorConstance {
     public static final int level3Pos = 2800;
 
     public static final int moveBoxMinPos = 621;
-    public static final int moveBoxMaxPos = 812;
+    public static final int moveBoxMaxPos = 1300;
+    public static final int moveClawMaxPos = 200;
+
 
 
 

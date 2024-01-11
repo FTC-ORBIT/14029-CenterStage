@@ -33,6 +33,7 @@ public class TeleOp14029 extends OpMode {
     public void init() {
         Gyro.init(hardwareMap);
         Drivetrain.init(hardwareMap);
+        Elevator.init(hardwareMap);
         Intake.init(hardwareMap);
         Wrist.init(hardwareMap);
         Claw.init(hardwareMap);
@@ -56,6 +57,9 @@ public class TeleOp14029 extends OpMode {
         if (gamepad1.y){
             state = RobotState.TRAVEL;
         }
+        if (gamepad1.left_bumper){
+            state = RobotState.CLIMB;
+        }
 
         if (gamepad1.dpad_down){
             state = RobotState.TRAVEL;
@@ -74,9 +78,13 @@ public class TeleOp14029 extends OpMode {
             case INTAKE:
                 elevatorState = ElevatorState.INTAKE;
                 intakeState = IntakeState.INTAKE;
-                clawState = ClawState.OPEN;
-                if (Elevator.getElevatorPos() < ElevatorConstance.moveBoxMaxPos){
+                if (Elevator.getElevatorPos() < ElevatorConstance.moveBoxMaxPos) {
                     wristState = WristState.INTAKE;
+                }
+                if (Elevator.getElevatorPos() < ElevatorConstance.moveClawMaxPos){
+                    clawState = ClawState.OPEN;
+                }else {
+                    clawState = ClawState.CLOSED;
                 }
                 break;
             case DROP:
@@ -86,13 +94,22 @@ public class TeleOp14029 extends OpMode {
                 break;
             case TRAVEL:
                 clawState = ClawState.CLOSED;
+                intakeState = IntakeState.STOP;
                 if (Elevator.getElevatorPos() > ElevatorConstance.moveBoxMinPos){
                     wristState = WristState.DEPLETE;
                 }
                 break;
             case DEPLETE:
                 intakeState = IntakeState.DEPLETE;
-                wristState = WristState.DEPLETE;
+//                wristState = WristState.INTAKE;
+                break;
+            case CLIMB:
+                intakeState = IntakeState.STOP;
+                clawState = ClawState.CLOSED;
+                elevatorState = ElevatorState.INTAKE;
+                if (Elevator.getElevatorPos() < ElevatorConstance.moveBoxMaxPos) {
+                    wristState = WristState.INTAKE;
+                }
                 break;
         }
 
@@ -100,7 +117,8 @@ public class TeleOp14029 extends OpMode {
         Intake.operate(intakeState);
         Elevator.operate(elevatorState,gamepad1);
         Claw.operate(clawState);
-
+        Wrist.operate(wristState);
+        telemetry.addData("", Elevator.getElevatorPos());
 
     }
 }

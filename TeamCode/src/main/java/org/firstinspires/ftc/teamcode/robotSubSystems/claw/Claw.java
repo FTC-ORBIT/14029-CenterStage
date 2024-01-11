@@ -9,8 +9,8 @@ public class Claw {
     private static Servo rightServo;
 
     public static void init(HardwareMap hardwareMap){
-        leftServo = hardwareMap.get(Servo.class, "left servo");
-        rightServo = hardwareMap.get(Servo.class, "right servo");
+        leftServo = hardwareMap.get(Servo.class, "claw left");
+        rightServo = hardwareMap.get(Servo.class, "claw right");
 
     }
 

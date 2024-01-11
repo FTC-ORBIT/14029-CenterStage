@@ -9,8 +9,11 @@ public class Wrist {
     private static Servo leftServo;
 
     public static void init(HardwareMap hardwareMap){
-        rightServo = hardwareMap.get(Servo.class, "right servo");
-        leftServo = hardwareMap.get(Servo.class, "left servo");
+        rightServo = hardwareMap.get(Servo.class, "wrist right");
+        leftServo = hardwareMap.get(Servo.class, "wrist left");
+
+        rightServo.resetDeviceConfigurationForOpMode();
+        leftServo.resetDeviceConfigurationForOpMode();
 
     }
 
