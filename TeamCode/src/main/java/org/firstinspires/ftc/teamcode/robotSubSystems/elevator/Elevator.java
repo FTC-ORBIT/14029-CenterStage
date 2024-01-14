@@ -26,8 +26,8 @@ public class Elevator {
     public static void init(HardwareMap hardwareMap) {
         rightMotor = hardwareMap.get(DcMotor.class, "0");
         leftMotor = hardwareMap.get(DcMotor.class, "1");
-        rightMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        leftMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        rightMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
+        leftMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
 
         rightMotor.setDirection(DcMotorSimple.Direction.REVERSE);
     }
@@ -52,7 +52,6 @@ public class Elevator {
         changeLevelPID.setWanted(wantedPos);
 
         power = changeLevelPID.update(getElevatorPos());
-
         leftMotor.setPower(power);
         rightMotor.setPower(power);
 
@@ -61,18 +60,18 @@ public class Elevator {
     private static int encoderResetVal = 0;
     private static int encoderResetValL = 0;
     public static int getElevatorPos() {
-        return rightMotor.getCurrentPosition() - encoderResetVal;
+        return leftMotor.getCurrentPosition() - encoderResetVal;
     }
 
     public static int getWantedPos(){return wantedPosition;}
 
     public static double getElevatorPosL() {
-//        return leftMotor.getCurrentPosition() - encoderResetValL;
-        return power;
+        return leftMotor.getCurrentPosition() - encoderResetValL;
+//        return power;
     }
 
     public static void resetEncoder(){
-        encoderResetVal = rightMotor.getCurrentPosition();
+        encoderResetVal = leftMotor.getCurrentPosition();
         encoderResetValL = leftMotor.getCurrentPosition();
     }
 

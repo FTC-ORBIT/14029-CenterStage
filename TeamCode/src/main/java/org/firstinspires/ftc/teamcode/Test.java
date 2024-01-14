@@ -41,15 +41,19 @@ public class Test extends OpMode {
 
         if (gamepad1.dpad_down){
             elevatorState = ElevatorState.LEVEL1;
+            Elevator.operate(elevatorState, gamepad1);
         }
         if (gamepad1.dpad_right || gamepad1.dpad_left){
             elevatorState = ElevatorState.LEVEL2;
+            Elevator.operate(elevatorState, gamepad1);
         }
         if (gamepad1.dpad_up){
             elevatorState = ElevatorState.LEVEL3;
+            Elevator.operate(elevatorState, gamepad1);
         }
         if (gamepad1.b){
             elevatorState = ElevatorState.INTAKE;
+            Elevator.operate(elevatorState, gamepad1);
         }
 
         if (gamepad1.a){Intake.operate(IntakeState.INTAKE);}

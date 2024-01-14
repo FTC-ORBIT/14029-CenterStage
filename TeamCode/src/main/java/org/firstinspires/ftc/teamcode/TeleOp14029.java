@@ -77,14 +77,16 @@ public class TeleOp14029 extends OpMode {
         switch (state){
             case INTAKE:
                 elevatorState = ElevatorState.INTAKE;
-                intakeState = IntakeState.INTAKE;
                 if (Elevator.getElevatorPos() < ElevatorConstance.moveBoxMaxPos) {
                     wristState = WristState.INTAKE;
                 }
                 if (Elevator.getElevatorPos() < ElevatorConstance.moveClawMaxPos){
                     clawState = ClawState.OPEN;
+                    intakeState = IntakeState.INTAKE;
+
                 }else {
                     clawState = ClawState.CLOSED;
+                    intakeState = IntakeState.STOP;
                 }
                 break;
             case DROP:
@@ -118,7 +120,8 @@ public class TeleOp14029 extends OpMode {
         Elevator.operate(elevatorState,gamepad1);
         Claw.operate(clawState);
         Wrist.operate(wristState);
-        telemetry.addData("", Elevator.getElevatorPos());
+        telemetry.addData("pos", Elevator.getElevatorPos());
+        telemetry.addData("power", Elevator.getElevatorPosL());
 
     }
 }
