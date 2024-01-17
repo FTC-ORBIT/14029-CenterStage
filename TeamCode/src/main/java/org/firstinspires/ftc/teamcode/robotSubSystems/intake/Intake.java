@@ -27,8 +27,8 @@ public class Intake {
                 sideWheels.setPower(1);
                 break;
             case DEPLETE:
-                upperBar.setPower(-0.3);
-                sideWheels.setPower(-0.3);
+                upperBar.setPower(-0.6);
+                sideWheels.setPower(-0.6);
                 break;
             case STOP:
                 upperBar.setPower(0);

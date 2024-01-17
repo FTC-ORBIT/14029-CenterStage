@@ -3,7 +3,7 @@ package org.firstinspires.ftc.teamcode.utils;
 public final class Angle {
 
     public static double wrapAngle0_360(final double theta) {
-        return (theta % 360 + 360) % 360;
+        return theta % 360;
     }
     // convert 0-360 iRadians
 

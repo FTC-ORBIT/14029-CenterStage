@@ -1,11 +1,11 @@
 package org.firstinspires.ftc.teamcode.robotSubSystems.drivetrain;
 
-import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
-import com.qualcomm.robotcore.hardware.Gamepad;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
+import org.firstinspires.ftc.teamcode.robotSubSystems.elevator.Elevator;
+import org.firstinspires.ftc.teamcode.robotSubSystems.elevator.ElevatorConstance;
 import org.firstinspires.ftc.teamcode.robotSubSystems.poseTracker.PoseTracker;
 import org.firstinspires.ftc.teamcode.sensors.Gyro;
 import org.firstinspires.ftc.teamcode.utils.Angle;
@@ -30,18 +30,30 @@ public class Drivetrain {
         dtMotors[3].setDirection(DcMotorSimple.Direction.REVERSE);
     }
 
-    public static void operate(Gamepad gamepad) {
-        drive(gamepad);
+    public static void operate(Vector vector, double rotation) {
+        drive(
+                slowedVec(
+                        fieldCentric(vector),
+                        Elevator.getElevatorPos(),
+                        ElevatorConstance.level3Pos,
+                        0.40
+                ),
+                rotation
+        );
     }
-
-    private static void drive(Gamepad gamepad) {
-        final Vector vectorGamepad = new Vector(gamepad.left_stick_x, -gamepad.left_stick_y);
-//        vectorGamepad.rotate(Angle.wrapAngle0_360(Gyro.getAngle()));
-
-        dtMotors[0].setPower(Math.signum(vectorGamepad.y + vectorGamepad.x + gamepad.right_trigger - gamepad.left_trigger) * Math.max(DrivetrainConstants.minDriveSpeed, Math.min(DrivetrainConstants.maxDriveSpeed,Math.abs(vectorGamepad.y + vectorGamepad.x + gamepad.right_trigger - gamepad.left_trigger))));
-        dtMotors[1].setPower(Math.signum(vectorGamepad.y - vectorGamepad.x + gamepad.right_trigger - gamepad.left_trigger) *Math.max(DrivetrainConstants.minDriveSpeed, Math.min(DrivetrainConstants.maxDriveSpeed,Math.abs(vectorGamepad.y - vectorGamepad.x + gamepad.right_trigger - gamepad.left_trigger))));
-        dtMotors[2].setPower(Math.signum(vectorGamepad.y - vectorGamepad.x - gamepad.right_trigger + gamepad.left_trigger) *Math.max(DrivetrainConstants.minDriveSpeed, Math.min(DrivetrainConstants.maxDriveSpeed,Math.abs(vectorGamepad.y - vectorGamepad.x - gamepad.right_trigger + gamepad.left_trigger))));
-        dtMotors[3].setPower(Math.signum(vectorGamepad.y + vectorGamepad.x - gamepad.right_trigger + gamepad.left_trigger) *Math.max(DrivetrainConstants.minDriveSpeed, Math.min(DrivetrainConstants.maxDriveSpeed,Math.abs(vectorGamepad.y + vectorGamepad.x - gamepad.right_trigger + gamepad.left_trigger))));
+    private static Vector slowedVec(Vector vector, double current ,double highest, double speed) {
+        //0.32
+        return vector.scale(Math.max(speed,(highest - current) / highest));
+    }
+    private static Vector fieldCentric(Vector gamepad) {
+        gamepad =  gamepad.rotate(-Math.toRadians(Angle.wrapAngle0_360(Gyro.getAngle())));
+        return gamepad;
+    }
+    private static void drive(Vector vector, double rotation) {
+        dtMotors[0].setPower(Math.signum(vector.y + vector.x + rotation) * Math.max(DrivetrainConstants.minDriveSpeed, Math.min(DrivetrainConstants.maxDriveSpeed,Math.abs(vector.y + vector.x + rotation))));
+        dtMotors[1].setPower(Math.signum(vector.y - vector.x + rotation) *Math.max(DrivetrainConstants.minDriveSpeed, Math.min(DrivetrainConstants.maxDriveSpeed,Math.abs(vector.y - vector.x + rotation))));
+        dtMotors[2].setPower(Math.signum(vector.y - vector.x - rotation) *Math.max(DrivetrainConstants.minDriveSpeed, Math.min(DrivetrainConstants.maxDriveSpeed,Math.abs(vector.y - vector.x - rotation))));
+        dtMotors[3].setPower(Math.signum(vector.y + vector.x - rotation) *Math.max(DrivetrainConstants.minDriveSpeed, Math.min(DrivetrainConstants.maxDriveSpeed,Math.abs(vector.y + vector.x - rotation))));
     }
 
     private static PID moveRobotLfPID = new PID(DrivetrainConstants.moveRobotLfKp,DrivetrainConstants.moveRobotLfKi,DrivetrainConstants.moveRobotLfKd,DrivetrainConstants.moveRobotLfKf,DrivetrainConstants.moveRobotLfIzone,DrivetrainConstants.moveRobotLfMaxSpeed,DrivetrainConstants.moveRobotLfMinSpeed);

@@ -4,7 +4,6 @@ import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
-import org.firstinspires.ftc.teamcode.robotData.GlobalData;
 import org.firstinspires.ftc.teamcode.robotSubSystems.claw.Claw;
 import org.firstinspires.ftc.teamcode.robotSubSystems.claw.ClawState;
 import org.firstinspires.ftc.teamcode.robotSubSystems.drivetrain.Drivetrain;
@@ -16,6 +15,8 @@ import org.firstinspires.ftc.teamcode.robotSubSystems.intake.IntakeState;
 import org.firstinspires.ftc.teamcode.robotSubSystems.wrist.Wrist;
 import org.firstinspires.ftc.teamcode.robotSubSystems.wrist.WristState;
 import org.firstinspires.ftc.teamcode.sensors.Gyro;
+import org.firstinspires.ftc.teamcode.utils.Angle;
+import org.firstinspires.ftc.teamcode.utils.Vector;
 
 @TeleOp(name = "TeleOp")
 public class TeleOp14029 extends OpMode {
@@ -44,22 +45,31 @@ public class TeleOp14029 extends OpMode {
 //        GlobalData.currentTime = timer.milliseconds();
 //        GlobalData.deltaTime = GlobalData.currentTime - GlobalData.lastTime;
 //        GlobalData.lastTime = GlobalData.currentTime;
-
-        if (gamepad1.a){
-            state = RobotState.INTAKE;
-        }
-        if (gamepad1.b){
-            state = RobotState.DEPLETE;
-        }
-        if (gamepad1.x){
-            state = RobotState.DROP;
-        }
-        if (gamepad1.y){
-            state = RobotState.TRAVEL;
-        }
+        if (gamepad1.a){ state = RobotState.INTAKE; }
+        if (gamepad1.b){ state = RobotState.DEPLETE; }
+        if (gamepad1.x){ state = RobotState.DROP; }
+        if (gamepad1.y){ state = RobotState.TRAVEL; }
+        if (gamepad1.back) {Gyro.resetGyro();}
         if (gamepad1.left_bumper){
-            state = RobotState.CLIMB;
+            if (state == RobotState.DROP_RIGHT || state == RobotState.DROP) {
+                state = RobotState.DROP;
+            }else {
+                state = RobotState.DROP_LEFT;
+            }
         }
+        if (gamepad1.right_bumper){
+            if (state == RobotState.DROP_LEFT || state == RobotState.DROP) {
+                state = RobotState.DROP;
+            }else {
+                state = RobotState.DROP_RIGHT;
+            }
+        }
+        Drivetrain.operate(new Vector(gamepad1.left_stick_x, -gamepad1.left_stick_y), gamepad1.right_trigger - gamepad1.left_trigger);
+        Intake.operate(intakeState);
+        Elevator.operate(elevatorState, gamepad1.right_stick_y);
+        Claw.operate(clawState);
+        Wrist.operate(wristState);
+        if (gamepad1.right_stick_button){ state = RobotState.CLIMB; }
 
         if (gamepad1.dpad_down){
             state = RobotState.TRAVEL;
@@ -92,7 +102,14 @@ public class TeleOp14029 extends OpMode {
             case DROP:
                 intakeState = IntakeState.STOP;
                 clawState = ClawState.OPEN;
-                wristState = WristState.DEPLETE;
+                break;
+            case DROP_RIGHT:
+                intakeState = IntakeState.STOP;
+                clawState = ClawState.OPEN_RIGHT;
+                break;
+            case DROP_LEFT:
+                intakeState = IntakeState.STOP;
+                clawState = ClawState.OPEN_LEFT;
                 break;
             case TRAVEL:
                 clawState = ClawState.CLOSED;
@@ -109,17 +126,12 @@ public class TeleOp14029 extends OpMode {
                 intakeState = IntakeState.STOP;
                 clawState = ClawState.CLOSED;
                 elevatorState = ElevatorState.INTAKE;
-                if (Elevator.getElevatorPos() < ElevatorConstance.moveBoxMaxPos) {
+                if (Elevator.getElevatorPos() < ElevatorConstance.moveBoxMaxPosClimb) {
                     wristState = WristState.INTAKE;
                 }
                 break;
         }
 
-        Drivetrain.operate(gamepad1);
-        Intake.operate(intakeState);
-        Elevator.operate(elevatorState,gamepad1);
-        Claw.operate(clawState);
-        Wrist.operate(wristState);
         telemetry.addData("pos", Elevator.getElevatorPos());
         telemetry.addData("power", Elevator.getElevatorPosL());
 

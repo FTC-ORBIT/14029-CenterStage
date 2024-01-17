@@ -24,6 +24,14 @@ public class Claw {
                 leftServo.setPosition(ClawConstance.closedLeftPos);
                 rightServo.setPosition(ClawConstance.closedRightPos);
                 break;
+            case OPEN_LEFT:
+                leftServo.setPosition(ClawConstance.openLeftPos);
+                rightServo.setPosition(ClawConstance.closedRightPos);
+                break;
+            case OPEN_RIGHT:
+                leftServo.setPosition(ClawConstance.closedLeftPos);
+                rightServo.setPosition(ClawConstance.openRightPos);
+                break;
         }
 
     }
