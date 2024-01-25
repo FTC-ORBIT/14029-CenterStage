@@ -9,13 +9,13 @@ public class Wrist {
     private static Servo rightServo;
     private static Servo leftServo;
 
-    private static TouchSensor touchSensor;
+//    private static TouchSensor touchSensor;
 
     public static void init(HardwareMap hardwareMap){
         rightServo = hardwareMap.get(Servo.class, "wrist right");
         leftServo = hardwareMap.get(Servo.class, "wrist left");
 
-        touchSensor = hardwareMap.get(TouchSensor.class, "touchSensor");
+//        touchSensor = hardwareMap.get(TouchSensor.class, "touchSensor");
 
         rightServo.resetDeviceConfigurationForOpMode();
         leftServo.resetDeviceConfigurationForOpMode();
@@ -23,7 +23,7 @@ public class Wrist {
     }
 
     public static void operate(WristState state){
-        if (touchSensor.isPressed()) {state = WristState.DEPLETE;}
+//        if (touchSensor.isPressed()) {state = WristState.DEPLETE;}
         switch (state){
             case DEPLETE:
                 rightServo.setPosition(WristConstance.rightServoDepletePos);

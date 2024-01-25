@@ -10,9 +10,9 @@ public class ElevatorConstance {
     public static final double changeLevelMaxSpeed = 0.7;
     public static final double changeLevelMinSpeed = 0;
 
-    public static final int intakePos = 0;
-    public static final int level1Pos = 1193;
-    public static final int level2Pos = 2150;
+    public static final int intakePos = 50;
+    public static final int level1Pos = 1800;
+    public static final int level2Pos = 2200;
     public static final int level3Pos = 2800;
 
     public static final int moveBoxMinPos = 400;

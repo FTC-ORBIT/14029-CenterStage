@@ -60,13 +60,21 @@ public class Drivetrain {
     private static PID moveRobotRfPID = new PID(DrivetrainConstants.moveRobotRfKp,DrivetrainConstants.moveRobotRfKi,DrivetrainConstants.moveRobotRfKd,DrivetrainConstants.moveRobotRfKf,DrivetrainConstants.moveRobotRfIzone,DrivetrainConstants.moveRobotRfMaxSpeed,DrivetrainConstants.moveRobotRfMinSpeed);
 
     private static PID turnRobotPID = new PID(DrivetrainConstants.turnRobotKp,DrivetrainConstants.turnRobotKi,DrivetrainConstants.turnRobotKd,DrivetrainConstants.turnRobotKf,DrivetrainConstants.turnRobotIzone,DrivetrainConstants.turnRobotMaxSpeed,DrivetrainConstants.turnRobotMinSpeed);
+    private static boolean isFinished = false;
     public static void moveRobot(Pose2D wanted){
         wanted.vector.rotate(Angle.wrapAngle0_360(Gyro.getAngle()));
-        moveRobotLfPID.setWanted(wanted.getY() + wanted.getX());
-        moveRobotRfPID.setWanted(wanted.getY() - wanted.getX());
 
-        double lfPower = moveRobotLfPID.update(PoseTracker.getPose().getY() + PoseTracker.getPose().getX());
-        double rfPower = moveRobotRfPID.update(PoseTracker.getPose().getY() - PoseTracker.getPose().getX());
+        final double lfWanted = wanted.getY() + wanted.getX();
+        final double rfWanted = wanted.getY() - wanted.getX();
+
+        moveRobotLfPID.setWanted(lfWanted);
+        moveRobotRfPID.setWanted(rfWanted);
+
+        final double lfCurrent = PoseTracker.getPose().getY() + PoseTracker.getPose().getX();
+        final double rfCurrent = PoseTracker.getPose().getY() - PoseTracker.getPose().getX();
+
+        double lfPower = moveRobotLfPID.update(lfCurrent);
+        double rfPower = moveRobotRfPID.update(rfCurrent);
 
         final double maxPower = Math.max(lfPower, rfPower);
 
@@ -85,7 +93,15 @@ public class Drivetrain {
         dtMotors[2].setPower(rfPower + rotationPower);
         dtMotors[3].setPower(lfPower - rotationPower);
 
+        final boolean isFinishedLf = Math.abs(lfWanted) - 30 < Math.abs(lfCurrent) && Math.abs(lfCurrent) < Math.abs(lfWanted) + 30;
+        final boolean isFinishedRf = Math.abs(rfWanted) - 30 < Math.abs(rfCurrent) && Math.abs(rfCurrent) < Math.abs(rfWanted) + 30;
+        final boolean isFinishedTurning = Math.abs(wanted.getAngle()) - 30 < Math.abs(PoseTracker.getPose().getAngle()) && Math.abs(PoseTracker.getPose().getAngle()) < Math.abs(wanted.getAngle()) + 30;
 
+        isFinished = isFinishedLf && isFinishedRf && isFinishedTurning;
+    }
+
+    public static boolean isFinished(){
+        return isFinished;
     }
 
     public static Vector getEncoderPos(){
