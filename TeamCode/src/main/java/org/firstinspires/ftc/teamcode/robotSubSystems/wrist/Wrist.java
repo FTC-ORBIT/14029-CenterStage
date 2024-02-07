@@ -33,6 +33,9 @@ public class Wrist {
                 rightServo.setPosition(WristConstance.rightServoIntakePos);
                 leftServo.setPosition(WristConstance.leftServoIntakePos);
                 break;
+            case GROUND:
+                leftServo.setPosition(WristConstance.leftServoGroundPos);
+                break;
         }
     }
 

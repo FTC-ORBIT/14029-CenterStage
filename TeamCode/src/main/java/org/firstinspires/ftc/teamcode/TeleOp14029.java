@@ -4,6 +4,7 @@ import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
+import org.firstinspires.ftc.teamcode.autonomous.aprilTagDetector.AprilTagDetector;
 import org.firstinspires.ftc.teamcode.robotSubSystems.claw.Claw;
 import org.firstinspires.ftc.teamcode.robotSubSystems.claw.ClawState;
 import org.firstinspires.ftc.teamcode.robotSubSystems.drivetrain.Drivetrain;
@@ -20,7 +21,7 @@ import org.firstinspires.ftc.teamcode.utils.Vector;
 
 @TeleOp(name = "TeleOp")
 public class TeleOp14029 extends OpMode {
-    private final ElapsedTime timer = new ElapsedTime();
+    private static final ElapsedTime timer = new ElapsedTime();
 
     RobotState state = RobotState.TRAVEL;
 
@@ -39,7 +40,10 @@ public class TeleOp14029 extends OpMode {
         Wrist.init(hardwareMap);
         Claw.init(hardwareMap);
     }
-
+    private static double stopIntakeStartTime = 0;
+    private static double startIntakeStartTime = 0;
+    private static boolean firstTimeInIntake = true;
+    private static RobotState lastState = RobotState.INTAKE.INTAKE;
     @Override
     public void loop() {
 
@@ -78,16 +82,28 @@ public class TeleOp14029 extends OpMode {
             elevatorState = ElevatorState.LEVEL3;
         }
 
+        if (gamepad1.left_stick_button){wristState = WristState.GROUND;}
+
+
+
+        if (state != lastState){
+            firstTimeInIntake = true;
+        }
         switch (state){
             case INTAKE:
+                if (firstTimeInIntake){
+                    startIntakeStartTime = timer.milliseconds();
+                    firstTimeInIntake = false;
+                }
                 elevatorState = ElevatorState.INTAKE;
                 if (Elevator.getElevatorPos() < ElevatorConstance.moveBoxMaxPos) {
                     wristState = WristState.INTAKE;
                 }
                 if (Elevator.getElevatorPos() < ElevatorConstance.moveClawMaxPos){
                     clawState = ClawState.OPEN;
-                    intakeState = IntakeState.INTAKE;
-
+                    if (timer.milliseconds() - startIntakeStartTime > 400) {
+                        intakeState = IntakeState.INTAKE;
+                    }
                 }else {
                     clawState = ClawState.CLOSED;
                     intakeState = IntakeState.STOP;
@@ -106,10 +122,18 @@ public class TeleOp14029 extends OpMode {
                 clawState = ClawState.OPEN_LEFT;
                 break;
             case TRAVEL:
+                if (firstTimeInIntake){
+                    stopIntakeStartTime = timer.milliseconds();
+                    firstTimeInIntake = false;
+                }
                 clawState = ClawState.CLOSED;
-                intakeState = IntakeState.STOP;
+                if (timer.milliseconds() - stopIntakeStartTime > 400){
+                    intakeState = IntakeState.STOP;
+                }
                 if (Elevator.getElevatorPos() > ElevatorConstance.moveBoxMinPos){
                     wristState = WristState.DEPLETE;
+                }else if (timer.milliseconds() - stopIntakeStartTime > 100){
+                    wristState = WristState.GROUND;
                 }
                 break;
             case DEPLETE:
@@ -125,14 +149,18 @@ public class TeleOp14029 extends OpMode {
                 }
                 break;
         }
+        lastState = state;
 
         telemetry.addData("pos", Elevator.getElevatorPos());
         telemetry.addData("power", Elevator.getElevatorPosL());
+
+        telemetry.addData("time", timer.milliseconds());
 
         Drivetrain.operate(new Vector(gamepad1.left_stick_x, -gamepad1.left_stick_y), gamepad1.right_trigger - gamepad1.left_trigger);
         Intake.operate(intakeState);
         Elevator.operate(elevatorState, gamepad1.right_stick_y);
         Claw.operate(clawState);
+        Intake.servoTest(gamepad2);
         Wrist.operate(wristState);
 
     }

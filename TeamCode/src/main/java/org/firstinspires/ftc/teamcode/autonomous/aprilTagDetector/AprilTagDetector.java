@@ -54,10 +54,9 @@ public class AprilTagDetector {
     // UNITS ARE METERS
     static double tagsize = 0.166;
 
-    static int leftTagPose = 0;
-    static int rightTagPose = 0;
+    static int midTagPose = 0;
 
-    static int tagNum = 0;
+    static int tagNum = 2;
 
     static AprilTagDetection tagOfInterest = null;
 
@@ -67,17 +66,14 @@ public class AprilTagDetector {
         aprilTagDetectionPipeline = new AprilTagDetectionPipeline(tagsize, fx, fy, cx, cy);
 
         camera.setPipeline(aprilTagDetectionPipeline);
-        camera.openCameraDeviceAsync(new OpenCvCamera.AsyncCameraOpenListener()
-        {
+        camera.openCameraDeviceAsync(new OpenCvCamera.AsyncCameraOpenListener() {
             @Override
-            public void onOpened()
-            {
-                camera.startStreaming(1280,720, OpenCvCameraRotation.UPRIGHT);
+            public void onOpened() {
+                camera.startStreaming(1280, 720, OpenCvCameraRotation.UPRIGHT);
             }
 
             @Override
-            public void onError(int errorCode)
-            {
+            public void onError(int errorCode) {
 
             }
         });
@@ -88,59 +84,55 @@ public class AprilTagDetector {
          * The INIT-loop:
          * This REPLACES waitForStart!
          */
-        while (!opMode.isStarted() && !opMode.isStopRequested())
-        {
+        while (!opMode.isStarted() && !opMode.isStopRequested()) {
             ArrayList<AprilTagDetection> currentDetections = aprilTagDetectionPipeline.getLatestDetections();
 
-            if(currentDetections.size() != 0)
-            {
+            if (currentDetections.size() != 0) {
                 boolean tagFound = false;
 
-                for(AprilTagDetection tag : currentDetections)
-                {
-                    if(tag.id == tagNum)
-                    {
+                for (AprilTagDetection tag : currentDetections) {
+                    if (tag.id == tagNum) {
                         tagOfInterest = tag;
                         tagFound = true;
                         break;
                     }
                 }
 
-                if(tagFound)
-                {
+                if (tagFound) {
                     opMode.telemetry.addLine("Tag of interest is in sight!\n\nLocation data:");
                     tagToTelemetry(tagOfInterest, opMode);
-                }
-                else
-                {
+                } else {
                     opMode.telemetry.addLine("Don't see tag of interest :(");
 
-                    if(tagOfInterest == null)
-                    {
+                    if (tagOfInterest == null) {
                         opMode.telemetry.addLine("(The tag has never been seen)");
-                    }
-                    else
-                    {
+                    } else {
                         opMode.telemetry.addLine("\nBut we HAVE seen the tag before; last seen at:");
                         tagToTelemetry(tagOfInterest, opMode);
                     }
                 }
 
-            }
-            else
-            {
+            } else {
                 opMode.telemetry.addLine("Don't see tag of interest :(");
 
-                if(tagOfInterest == null)
-                {
+                if (tagOfInterest == null) {
                     opMode.telemetry.addLine("(The tag has never been seen)");
-                }
-                else
-                {
+                } else {
                     opMode.telemetry.addLine("\nBut we HAVE seen the tag before; last seen at:");
                     tagToTelemetry(tagOfInterest, opMode);
                 }
 
+            }
+
+            if (tagOfInterest != null) {
+                if (tagOfInterest.pose.x < midTagPose) {
+                    tagPosition = TagPosition.MIDDLE;
+                } else if (tagOfInterest.pose.x > midTagPose) {
+                    tagPosition = TagPosition.RIGHT;
+                }
+                opMode.telemetry.addData("pose: ", tagOfInterest.pose.x);
+            } else {
+                tagPosition = TagPosition.LEFT;
             }
 
             opMode.telemetry.update();
@@ -153,36 +145,25 @@ public class AprilTagDetector {
          */
 
         /* Update the telemetry */
-        if(tagOfInterest != null)
-        {
+        if (tagOfInterest != null) {
             opMode.telemetry.addLine("Tag snapshot:\n");
             tagToTelemetry(tagOfInterest, opMode);
             opMode.telemetry.update();
-        }
-        else
-        {
+        } else {
             opMode.telemetry.addLine("No tag snapshot available, it was never sighted during the init loop :(");
             opMode.telemetry.update();
         }
 
-        if(tagOfInterest.pose.x < leftTagPose) {
-            tagPosition = TagPosition.LEFT;
-        }else if (tagOfInterest.pose.x > rightTagPose){
-            tagPosition = TagPosition.RIGHT;
-        }else {
-            tagPosition = TagPosition.MIDDLE;
-        }
 
         /* You wouldn't have this in your autonomous, this is just to prevent the sample from ending */
     }
 
-    public static TagPosition getTagPosition(){
+    public static TagPosition getTagPosition() {
         return tagPosition;
     }
 
 
-    static void tagToTelemetry(AprilTagDetection detection , LinearOpMode opMode)
-    {
+    static void tagToTelemetry(AprilTagDetection detection, LinearOpMode opMode) {
         opMode.telemetry.addLine(String.format("\nDetected tag ID=%d", detection.id));
 //        opMode.telemetry.addLine(String.format("Translation X: %.2f feet", detection.pose.x*FEET_PER_METER));
 //        opMode.telemetry.addLine(String.format("Translation Y: %.2f feet", detection.pose.y*FEET_PER_METER));

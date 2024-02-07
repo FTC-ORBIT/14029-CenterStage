@@ -11,7 +11,7 @@ public class Elevator {
     private static DcMotor leftMotor;
     private static DcMotor rightMotor;
 
-    private static int wantedPos = 0;
+    private static int wantedPos = ElevatorConstance.intakePos;
 
     private static final PID changeLevelPID = new PID(
             ElevatorConstance.changeLevelKp,

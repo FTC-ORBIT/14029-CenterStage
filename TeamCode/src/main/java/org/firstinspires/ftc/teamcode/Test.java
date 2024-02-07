@@ -1,8 +1,10 @@
 package org.firstinspires.ftc.teamcode;
+import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
+import org.firstinspires.ftc.teamcode.autonomous.aprilTagDetector.AprilTagDetector;
 import org.firstinspires.ftc.teamcode.robotData.GlobalData;
 import org.firstinspires.ftc.teamcode.robotSubSystems.claw.Claw;
 import org.firstinspires.ftc.teamcode.robotSubSystems.claw.ClawState;
@@ -17,46 +19,15 @@ import org.firstinspires.ftc.teamcode.sensors.Gyro;
 import org.firstinspires.ftc.teamcode.utils.Vector;
 
 @TeleOp(name = "Test")
-public class Test extends OpMode {
-    private final ElapsedTime timer = new ElapsedTime();
-//    Elevator elevator = new Elevator();
-
-
-
+public class Test extends LinearOpMode {
 
     @Override
-    public void init() {
-//        Gyro.init(hardwareMap);
-        Drivetrain.init(hardwareMap);
-        Intake.init(hardwareMap);
-        Elevator.init(hardwareMap);
-        Claw.init(hardwareMap);
-        Wrist.init(hardwareMap);
-    }
-
-    @Override
-    public void loop() {
-//        Drivetrain.operate(gamepad1);
-        ElevatorState elevatorState = ElevatorState.INTAKE;
-
-
-        if (gamepad1.a){Intake.operate(IntakeState.INTAKE);}
-        else {Intake.operate(IntakeState.STOP);}
-//        Elevator.operate(elevatorState, gamepad1);
-
-        if (gamepad1.y){Wrist.operate(WristState.DEPLETE);}
-        else {Wrist.operate(WristState.INTAKE);}
-
-//        if (gamepad1.x){
-//            Claw.operate(ClawState.CLOSED);
-//        }
-//        else {Claw.operate(ClawState.OPEN);}
-
-        telemetry.addData("", Elevator.getElevatorPos());
-        telemetry.addData("", Elevator.getElevatorPosL());
-        GlobalData.currentTime = timer.milliseconds();
-        GlobalData.deltaTime = GlobalData.currentTime - GlobalData.lastTime;
-        GlobalData.lastTime = GlobalData.currentTime;
-
+    public void runOpMode() throws InterruptedException {
+        AprilTagDetector.runAprilTagDetection(this);
+        waitForStart();
+        while (true && opModeIsActive()){
+            telemetry.addData("", AprilTagDetector.getTagPosition());
+            telemetry.update();
+        }
     }
 }
