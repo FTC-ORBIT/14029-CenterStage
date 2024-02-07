@@ -112,8 +112,18 @@ public class AprilTagDetector {
                     }
                 }
 
+                if (tagOfInterest != null) {
+                    if (tagOfInterest.pose.x < midTagPose) {
+                        tagPosition = TagPosition.MIDDLE;
+                    } else if (tagOfInterest.pose.x > midTagPose) {
+                        tagPosition = TagPosition.RIGHT;
+                    }
+                }
             } else {
                 opMode.telemetry.addLine("Don't see tag of interest :(");
+
+                tagPosition = TagPosition.LEFT;
+
 
                 if (tagOfInterest == null) {
                     opMode.telemetry.addLine("(The tag has never been seen)");
@@ -124,16 +134,6 @@ public class AprilTagDetector {
 
             }
 
-            if (tagOfInterest != null) {
-                if (tagOfInterest.pose.x < midTagPose) {
-                    tagPosition = TagPosition.MIDDLE;
-                } else if (tagOfInterest.pose.x > midTagPose) {
-                    tagPosition = TagPosition.RIGHT;
-                }
-                opMode.telemetry.addData("pose: ", tagOfInterest.pose.x);
-            } else {
-                tagPosition = TagPosition.LEFT;
-            }
 
             opMode.telemetry.update();
             opMode.sleep(20);
