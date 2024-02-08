@@ -5,23 +5,28 @@ import static org.firstinspires.ftc.robotcore.external.BlocksOpModeCompanion.gam
 
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
+import com.qualcomm.robotcore.hardware.DistanceSensor;
 import com.qualcomm.robotcore.hardware.Gamepad;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.hardware.TouchSensor;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
+import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
+
 public class Intake {
 
     private static DcMotor upperBar;
     private static DcMotor sideWheels;
     private static Servo intakeServo;
+    private static DistanceSensor distanceSensor;
     private static TouchSensor touchSensor;
     public static void init(HardwareMap hardwareMap){
         upperBar = hardwareMap.get(DcMotor.class, "3");
         sideWheels = hardwareMap.get(DcMotor.class, "2");
         intakeServo = hardwareMap.get(Servo.class, "iS");
         touchSensor = hardwareMap.get(TouchSensor.class, "touchSensor");
+        distanceSensor = hardwareMap.get(DistanceSensor.class, "distanceSensor");
 
         upperBar.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         sideWheels.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
@@ -51,7 +56,7 @@ public class Intake {
                     firstTimePressed = true;
                     firstTimeInIntake = false;
                 }
-                if(touchSensor.isPressed() && firstTimePressed) {
+                if(touchSensor.isPressed() && firstTimePressed || distanceSensor.getDistance(DistanceUnit.CM) < 2 && firstTimePressed) {
                     startTime = timer.milliseconds();
                     firstTimePressed = false;
                 }

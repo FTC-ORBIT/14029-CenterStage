@@ -10,7 +10,9 @@ import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
 
 public class Gyro {
     public static BNO055IMU imu;
+    private static double resetAngle;
     private static double lastAngle;
+
 
 
     public static void init(HardwareMap hardwareMap) {
@@ -26,11 +28,20 @@ public class Gyro {
     }
 
     public static void resetGyro(){
-            lastAngle = imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES).firstAngle;
+            resetAngle = imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES).firstAngle;
     }
     public static double getAngle() {
 //        telemetry.addData("angle", imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES).firstAngle - lastAngle );
-        return imu.getAngularOrientation(AxesReference.INTRINSIC , AxesOrder.ZYX, AngleUnit.DEGREES).firstAngle - lastAngle;
+        return imu.getAngularOrientation(AxesReference.INTRINSIC , AxesOrder.ZYX, AngleUnit.DEGREES).firstAngle - resetAngle;
+    }
+
+
+    public static double getDeltaAngle(){
+        return getAngle() - lastAngle;
+    }
+
+    public static void setLastAngle(double angle){
+        lastAngle = angle;
     }
 
 

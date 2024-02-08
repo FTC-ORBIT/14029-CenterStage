@@ -5,13 +5,13 @@ import com.qualcomm.robotcore.hardware.Servo;
 
 public class Plane {
 
-    private Servo planeServo;
+    private static Servo planeServo;
 
-    public void init(HardwareMap hardwareMap) {
+    public static void init(HardwareMap hardwareMap) {
         planeServo = hardwareMap.get(Servo.class, "planeServo");
     }
 
-    public void operate(boolean plane) {
+    public static void operate(boolean plane) {
         if (plane) {
             planeServo.setPosition(0);
         } else {

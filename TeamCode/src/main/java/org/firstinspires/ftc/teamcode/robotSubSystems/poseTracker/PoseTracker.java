@@ -20,6 +20,8 @@ public class PoseTracker {
 
     public static void update(){
         final Vector encoders = Drivetrain.getEncoderPos();
+        encoders.x += PoseTrackerConstance.xErrorVal * Gyro.getDeltaAngle();
+        encoders.y += PoseTrackerConstance.yErrorVal * Gyro.getDeltaAngle();
 
         encoders.rotate(Angle.wrapAngle0_360(Gyro.getAngle()));
 

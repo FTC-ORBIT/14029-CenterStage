@@ -23,7 +23,7 @@ public class Drivetrain {
         dtMotors[2] = hardwareMap.get(DcMotor.class, "rf");
         dtMotors[3] = hardwareMap.get(DcMotor.class, "rb");
 
-        for (final  DcMotor dtMotors: dtMotors) {
+        for (final DcMotor dtMotors : dtMotors) {
             dtMotors.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         }
         dtMotors[0].setDirection(DcMotorSimple.Direction.REVERSE);
@@ -41,45 +41,57 @@ public class Drivetrain {
                 rotation
         );
     }
-    private static Vector slowedVec(Vector vector, double current ,double highest, double speed) {
+
+    private static Vector slowedVec(Vector vector, double current, double highest, double speed) {
         //0.32
-        return vector.scale(Math.max(speed,(highest - current) / highest));
+        return vector.scale(Math.max(speed, (highest - current) / highest));
     }
+
     private static Vector fieldCentric(Vector gamepad) {
-        gamepad =  gamepad.rotate(-Math.toRadians(Angle.wrapAngle0_360(Gyro.getAngle())));
+        gamepad = gamepad.rotate(-Math.toRadians(Angle.wrapAngle0_360(Gyro.getAngle())));
         return gamepad;
     }
+
     private static void drive(Vector vector, double rotation) {
-        dtMotors[0].setPower(Math.signum(vector.y + vector.x + rotation) * Math.max(DrivetrainConstants.minDriveSpeed, Math.min(DrivetrainConstants.maxDriveSpeed,Math.abs(vector.y + vector.x + rotation))));
-        dtMotors[1].setPower(Math.signum(vector.y - vector.x + rotation) *Math.max(DrivetrainConstants.minDriveSpeed, Math.min(DrivetrainConstants.maxDriveSpeed,Math.abs(vector.y - vector.x + rotation))));
-        dtMotors[2].setPower(Math.signum(vector.y - vector.x - rotation) *Math.max(DrivetrainConstants.minDriveSpeed, Math.min(DrivetrainConstants.maxDriveSpeed,Math.abs(vector.y - vector.x - rotation))));
-        dtMotors[3].setPower(Math.signum(vector.y + vector.x - rotation) *Math.max(DrivetrainConstants.minDriveSpeed, Math.min(DrivetrainConstants.maxDriveSpeed,Math.abs(vector.y + vector.x - rotation))));
+        dtMotors[0].setPower(Math.signum(vector.y + vector.x + rotation) * Math.max(DrivetrainConstants.minDriveSpeed, Math.min(DrivetrainConstants.maxDriveSpeed, Math.abs(vector.y + vector.x + rotation))));
+        dtMotors[1].setPower(Math.signum(vector.y - vector.x + rotation) * Math.max(DrivetrainConstants.minDriveSpeed, Math.min(DrivetrainConstants.maxDriveSpeed, Math.abs(vector.y - vector.x + rotation))));
+        dtMotors[2].setPower(Math.signum(vector.y - vector.x - rotation) * Math.max(DrivetrainConstants.minDriveSpeed, Math.min(DrivetrainConstants.maxDriveSpeed, Math.abs(vector.y - vector.x - rotation))));
+        dtMotors[3].setPower(Math.signum(vector.y + vector.x - rotation) * Math.max(DrivetrainConstants.minDriveSpeed, Math.min(DrivetrainConstants.maxDriveSpeed, Math.abs(vector.y + vector.x - rotation))));
     }
 
-    private static PID moveRobotLfPID = new PID(DrivetrainConstants.moveRobotLfKp,DrivetrainConstants.moveRobotLfKi,DrivetrainConstants.moveRobotLfKd,DrivetrainConstants.moveRobotLfKf,DrivetrainConstants.moveRobotLfIzone,DrivetrainConstants.moveRobotLfMaxSpeed,DrivetrainConstants.moveRobotLfMinSpeed);
-    private static PID moveRobotRfPID = new PID(DrivetrainConstants.moveRobotRfKp,DrivetrainConstants.moveRobotRfKi,DrivetrainConstants.moveRobotRfKd,DrivetrainConstants.moveRobotRfKf,DrivetrainConstants.moveRobotRfIzone,DrivetrainConstants.moveRobotRfMaxSpeed,DrivetrainConstants.moveRobotRfMinSpeed);
+    private static PID moveRobotPID = new PID(DrivetrainConstants.moveRobotKp, DrivetrainConstants.moveRobotKi, DrivetrainConstants.moveRobotKd, DrivetrainConstants.moveRobotKf, DrivetrainConstants.moveRobotIzone, DrivetrainConstants.moveRobotMaxSpeed, DrivetrainConstants.moveRobotMinSpeed);
 
-    private static PID turnRobotPID = new PID(DrivetrainConstants.turnRobotKp,DrivetrainConstants.turnRobotKi,DrivetrainConstants.turnRobotKd,DrivetrainConstants.turnRobotKf,DrivetrainConstants.turnRobotIzone,DrivetrainConstants.turnRobotMaxSpeed,DrivetrainConstants.turnRobotMinSpeed);
+    private static PID turnRobotPID = new PID(DrivetrainConstants.turnRobotKp, DrivetrainConstants.turnRobotKi, DrivetrainConstants.turnRobotKd, DrivetrainConstants.turnRobotKf, DrivetrainConstants.turnRobotIzone, DrivetrainConstants.turnRobotMaxSpeed, DrivetrainConstants.turnRobotMinSpeed);
     private static boolean isFinished = false;
-    public static void moveRobot(Pose2D wanted){
+    private static boolean firstTime = true;
+
+    private static double lfPower = 0;
+    private static double rfPower = 0;
+
+    public static void moveRobot(Pose2D wanted) {
         wanted.vector.rotate(Angle.wrapAngle0_360(Gyro.getAngle()));
 
         final double lfWanted = wanted.getY() + wanted.getX();
         final double rfWanted = wanted.getY() - wanted.getX();
 
-        moveRobotLfPID.setWanted(lfWanted);
-        moveRobotRfPID.setWanted(rfWanted);
 
         final double lfCurrent = PoseTracker.getPose().getY() + PoseTracker.getPose().getX();
         final double rfCurrent = PoseTracker.getPose().getY() - PoseTracker.getPose().getX();
 
-        double lfPower = moveRobotLfPID.update(lfCurrent);
-        double rfPower = moveRobotRfPID.update(rfCurrent);
 
-        final double maxPower = Math.max(lfPower, rfPower);
+        final double lfError = lfWanted - lfCurrent;
+        final double rfError = rfWanted - rfCurrent;
 
-        lfPower /= maxPower;
-        rfPower /= maxPower;
+            if (lfError > rfError) {
+                moveRobotPID.setWanted(lfWanted);
+                lfPower = moveRobotPID.update(lfCurrent);
+                rfPower = (rfError / lfError) * lfPower;
+            } else {
+                moveRobotPID.setWanted(rfWanted);
+                rfPower = moveRobotPID.update(rfCurrent);
+                lfPower = (lfError / rfError) * rfPower;
+            }
+
 
 
 //        turn robot pid
@@ -100,14 +112,13 @@ public class Drivetrain {
         isFinished = isFinishedLf && isFinishedRf && isFinishedTurning;
     }
 
-    public static boolean isFinished(){
+    public static boolean isFinished() {
         return isFinished;
     }
 
-    public static Vector getEncoderPos(){
+    public static Vector getEncoderPos() {
         return new Vector(dtMotors[0].getCurrentPosition(), dtMotors[1].getCurrentPosition());//TODO: change to the right motor
     }
-
 
 
     public void stop() {
@@ -116,7 +127,7 @@ public class Drivetrain {
         }
     }
 
-    public double ticksToCm(double ticks){
+    public double ticksToCm(double ticks) {
         return ticks * DrivetrainConstants.ticksToCM;
     }
 }

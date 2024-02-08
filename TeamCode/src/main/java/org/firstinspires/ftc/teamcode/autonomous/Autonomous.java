@@ -7,6 +7,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.teamcode.GlobalData;
 import org.firstinspires.ftc.teamcode.RobotState;
+import org.firstinspires.ftc.teamcode.autonomous.aprilTagDetector.AprilTagDetector;
 import org.firstinspires.ftc.teamcode.robotSubSystems.claw.Claw;
 import org.firstinspires.ftc.teamcode.robotSubSystems.claw.ClawState;
 import org.firstinspires.ftc.teamcode.robotSubSystems.drivetrain.Drivetrain;
@@ -22,7 +23,7 @@ import org.firstinspires.ftc.teamcode.utils.Pose2D;
 import org.firstinspires.ftc.teamcode.utils.Vector;
 
 @com.qualcomm.robotcore.eventloop.opmode.Autonomous(name = "autonomous")
-public class Autonomous extends OpMode {
+public class Autonomous extends LinearOpMode {
 
     private static int actionNum = 1;
     private static RobotState state = RobotState.TRAVEL;
@@ -32,18 +33,17 @@ public class Autonomous extends OpMode {
     ClawState clawState = ClawState.CLOSED;
     WristState wristState = WristState.INTAKE;
 
-    @Override
-    public void init() {
+    public void initRobot() {
         Gyro.init(hardwareMap);
         Drivetrain.init(hardwareMap);
         Elevator.init(hardwareMap);
         Intake.init(hardwareMap);
         Wrist.init(hardwareMap);
         Claw.init(hardwareMap);
+        AprilTagDetector.runAprilTagDetection(this);
     }
 
-    @Override
-    public void loop() {
+    public void operate() {
         switch (actionNum){
             case 1:
                 Drivetrain.moveRobot(new Pose2D(new Vector(0, 20), 0));
@@ -114,6 +114,15 @@ public class Autonomous extends OpMode {
         if (millis > startTime + ElapsedTime.MILLIS_IN_NANO){
             actionNum++;
             hasStarted = true;
+        }
+    }
+
+    @Override
+    public void runOpMode() throws InterruptedException {
+        initRobot();
+        waitForStart();
+        while (opModeIsActive()) {
+            operate();
         }
     }
 }

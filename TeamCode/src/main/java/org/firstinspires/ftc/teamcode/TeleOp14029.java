@@ -13,6 +13,7 @@ import org.firstinspires.ftc.teamcode.robotSubSystems.elevator.ElevatorConstance
 import org.firstinspires.ftc.teamcode.robotSubSystems.elevator.ElevatorState;
 import org.firstinspires.ftc.teamcode.robotSubSystems.intake.Intake;
 import org.firstinspires.ftc.teamcode.robotSubSystems.intake.IntakeState;
+import org.firstinspires.ftc.teamcode.robotSubSystems.plane.Plane;
 import org.firstinspires.ftc.teamcode.robotSubSystems.wrist.Wrist;
 import org.firstinspires.ftc.teamcode.robotSubSystems.wrist.WristState;
 import org.firstinspires.ftc.teamcode.sensors.Gyro;
@@ -39,6 +40,7 @@ public class TeleOp14029 extends OpMode {
         Intake.init(hardwareMap);
         Wrist.init(hardwareMap);
         Claw.init(hardwareMap);
+        Plane.init(hardwareMap);
     }
     private static double stopIntakeStartTime = 0;
     private static double startIntakeStartTime = 0;
@@ -52,6 +54,7 @@ public class TeleOp14029 extends OpMode {
         if (gamepad1.x){ state = RobotState.DROP; }
         if (gamepad1.y){ state = RobotState.TRAVEL; }
         if (gamepad1.back) {Gyro.resetGyro();}
+        if (gamepad2.back) {Plane.operate(true);}else {Plane.operate(false);}
         if (gamepad1.left_bumper){
             if (state == RobotState.DROP_RIGHT || state == RobotState.DROP) {
                 state = RobotState.DROP;
@@ -162,6 +165,6 @@ public class TeleOp14029 extends OpMode {
         Claw.operate(clawState);
         Intake.servoTest(gamepad2);
         Wrist.operate(wristState);
-
+        Gyro.setLastAngle(Gyro.getAngle());
     }
 }
