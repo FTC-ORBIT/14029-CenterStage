@@ -4,6 +4,7 @@ import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
+import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.teamcode.autonomous.aprilTagDetector.AprilTagDetector;
 import org.firstinspires.ftc.teamcode.robotSubSystems.claw.Claw;
 import org.firstinspires.ftc.teamcode.robotSubSystems.claw.ClawState;
@@ -31,6 +32,8 @@ public class TeleOp14029 extends OpMode {
     ClawState clawState = ClawState.CLOSED;
     WristState wristState = WristState.INTAKE;
 
+    private static boolean planeState = false;
+
 
     @Override
     public void init() {
@@ -45,7 +48,7 @@ public class TeleOp14029 extends OpMode {
     private static double stopIntakeStartTime = 0;
     private static double startIntakeStartTime = 0;
     private static boolean firstTimeInIntake = true;
-    private static RobotState lastState = RobotState.INTAKE.INTAKE;
+    private static RobotState lastState = RobotState.INTAKE;
     @Override
     public void loop() {
 
@@ -54,7 +57,8 @@ public class TeleOp14029 extends OpMode {
         if (gamepad1.x){ state = RobotState.DROP; }
         if (gamepad1.y){ state = RobotState.TRAVEL; }
         if (gamepad1.back) {Gyro.resetGyro();}
-        if (gamepad2.back) {Plane.operate(true);}else {Plane.operate(false);}
+        if (gamepad2.back) {planeState = true;}
+        if (gamepad2.a){planeState = false;}
         if (gamepad1.left_bumper){
             if (state == RobotState.DROP_RIGHT || state == RobotState.DROP) {
                 state = RobotState.DROP;
@@ -85,7 +89,7 @@ public class TeleOp14029 extends OpMode {
             elevatorState = ElevatorState.LEVEL3;
         }
 
-        if (gamepad1.left_stick_button){wristState = WristState.GROUND;}
+//        if (gamepad1.left_stick_button){wristState = WristState.GROUND;}
 
 
 
@@ -154,8 +158,10 @@ public class TeleOp14029 extends OpMode {
         }
         lastState = state;
 
+        telemetry.addData("DistSensor", Intake.distanceSensor.getDistance(DistanceUnit.CM));
         telemetry.addData("pos", Elevator.getElevatorPos());
         telemetry.addData("power", Elevator.getElevatorPosL());
+        telemetry.addData("wheel", Drivetrain.getEncoderPos());
 
         telemetry.addData("time", timer.milliseconds());
 
@@ -165,6 +171,7 @@ public class TeleOp14029 extends OpMode {
         Claw.operate(clawState);
         Intake.servoTest(gamepad2);
         Wrist.operate(wristState);
+        Plane.operate(planeState);
         Gyro.setLastAngle(Gyro.getAngle());
     }
 }

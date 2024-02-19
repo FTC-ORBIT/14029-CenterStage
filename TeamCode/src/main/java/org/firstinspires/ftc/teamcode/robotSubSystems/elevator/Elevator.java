@@ -24,10 +24,10 @@ public class Elevator {
 
 
     public static void init(HardwareMap hardwareMap) {
-        rightMotor = hardwareMap.get(DcMotor.class, "0");
-        leftMotor = hardwareMap.get(DcMotor.class, "1");
-        rightMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
-        leftMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
+        rightMotor = hardwareMap.get(DcMotor.class, "1");
+        leftMotor = hardwareMap.get(DcMotor.class, "0");
+        rightMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        leftMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
         rightMotor.setDirection(DcMotorSimple.Direction.REVERSE);
     }

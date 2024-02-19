@@ -117,7 +117,7 @@ public class Drivetrain {
     }
 
     public static Vector getEncoderPos() {
-        return new Vector(dtMotors[0].getCurrentPosition(), dtMotors[1].getCurrentPosition());//TODO: change to the right motor
+        return new Vector(0, dtMotors[3].getCurrentPosition());//TODO: change to the right motor
     }
 
 

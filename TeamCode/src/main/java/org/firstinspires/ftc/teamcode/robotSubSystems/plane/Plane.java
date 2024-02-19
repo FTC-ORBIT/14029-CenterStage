@@ -11,11 +11,12 @@ public class Plane {
         planeServo = hardwareMap.get(Servo.class, "planeServo");
     }
 
+
     public static void operate(boolean plane) {
         if (plane) {
-            planeServo.setPosition(0);
+            planeServo.setPosition(0.9);
         } else {
-            planeServo.setPosition(0.5);
+            planeServo.setPosition(0.2);
         }
     }
 }

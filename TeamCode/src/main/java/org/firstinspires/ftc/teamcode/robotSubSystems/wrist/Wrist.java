@@ -1,13 +1,15 @@
 package org.firstinspires.ftc.teamcode.robotSubSystems.wrist;
 
+import com.qualcomm.robotcore.hardware.Gamepad;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.hardware.TouchSensor;
 
-public class Wrist {
+import org.firstinspires.ftc.robotcore.external.Telemetry;
 
+public class Wrist {
     private static Servo rightServo;
-    private static Servo leftServo;
+    public static Servo leftServo;
 
 //    private static TouchSensor touchSensor;
 
@@ -34,6 +36,7 @@ public class Wrist {
                 leftServo.setPosition(WristConstance.leftServoIntakePos);
                 break;
             case GROUND:
+                rightServo.setPosition(WristConstance.rightServoGroundPos);
                 leftServo.setPosition(WristConstance.leftServoGroundPos);
                 break;
         }

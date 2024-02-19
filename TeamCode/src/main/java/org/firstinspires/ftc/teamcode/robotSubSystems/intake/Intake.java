@@ -1,15 +1,11 @@
 package org.firstinspires.ftc.teamcode.robotSubSystems.intake;
 
-import static org.firstinspires.ftc.robotcore.external.BlocksOpModeCompanion.gamepad1;
-import static org.firstinspires.ftc.robotcore.external.BlocksOpModeCompanion.gamepad2;
-
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.DistanceSensor;
 import com.qualcomm.robotcore.hardware.Gamepad;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
-import com.qualcomm.robotcore.hardware.TouchSensor;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
@@ -19,13 +15,11 @@ public class Intake {
     private static DcMotor upperBar;
     private static DcMotor sideWheels;
     private static Servo intakeServo;
-    private static DistanceSensor distanceSensor;
-    private static TouchSensor touchSensor;
+    public static DistanceSensor distanceSensor;
     public static void init(HardwareMap hardwareMap){
         upperBar = hardwareMap.get(DcMotor.class, "3");
         sideWheels = hardwareMap.get(DcMotor.class, "2");
         intakeServo = hardwareMap.get(Servo.class, "iS");
-        touchSensor = hardwareMap.get(TouchSensor.class, "touchSensor");
         distanceSensor = hardwareMap.get(DistanceSensor.class, "distanceSensor");
 
         upperBar.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
@@ -42,7 +36,9 @@ public class Intake {
 
     private static boolean firstTimeInIntake = true;
     private static boolean firstTimePressed = false;
+    private static double startPressedTime = 0;
     private static double startTime = 0;
+
 
     private static final ElapsedTime timer = new ElapsedTime();
 
@@ -55,13 +51,15 @@ public class Intake {
                     intakeServo.setPosition(IntakeConstance.intakeServoMiddlePos);
                     firstTimePressed = true;
                     firstTimeInIntake = false;
-                }
-                if(touchSensor.isPressed() && firstTimePressed || distanceSensor.getDistance(DistanceUnit.CM) < 2 && firstTimePressed) {
                     startTime = timer.milliseconds();
+                }
+                if(distanceSensor.getDistance(DistanceUnit.MM) < 33 && firstTimePressed && timer.milliseconds() - startTime > 400) {
+                    startPressedTime = timer.milliseconds();
                     firstTimePressed = false;
                 }
-                if (firstTimePressed){startTime = timer.milliseconds();}
-                if (timer.milliseconds() - startTime > 1000){
+                if (firstTimePressed){
+                    startPressedTime = timer.milliseconds();}
+                if (timer.milliseconds() - startPressedTime > 200){
                     intakeServo.setPosition(IntakeConstance.intakeServoOpenPos);
                 }
                 upperBar.setPower(1);
