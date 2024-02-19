@@ -16,6 +16,7 @@ import org.firstinspires.ftc.teamcode.robotSubSystems.elevator.ElevatorConstance
 import org.firstinspires.ftc.teamcode.robotSubSystems.elevator.ElevatorState;
 import org.firstinspires.ftc.teamcode.robotSubSystems.intake.Intake;
 import org.firstinspires.ftc.teamcode.robotSubSystems.intake.IntakeState;
+import org.firstinspires.ftc.teamcode.robotSubSystems.poseTracker.PoseTracker;
 import org.firstinspires.ftc.teamcode.robotSubSystems.wrist.Wrist;
 import org.firstinspires.ftc.teamcode.robotSubSystems.wrist.WristState;
 import org.firstinspires.ftc.teamcode.sensors.Gyro;
@@ -40,20 +41,24 @@ public class Autonomous extends LinearOpMode {
         Intake.init(hardwareMap);
         Wrist.init(hardwareMap);
         Claw.init(hardwareMap);
-        AprilTagDetector.runAprilTagDetection(this);
+//        AprilTagDetector.runAprilTagDetection(this);
+        Drivetrain.resetEncoders();
     }
 
     public void operate() {
+        actionNum = gamepad1.a ? 0 : actionNum;
         switch (actionNum){
             case 1:
-                Drivetrain.moveRobot(new Pose2D(new Vector(0, 20), 0));
-                state = RobotState.INTAKE;
+                Drivetrain.moveRobot(new Pose2D(new Vector(0,47000), 0), telemetry);
+                telemetry.addData("posY", PoseTracker.getPose().getY());
+                telemetry.addData("posX", PoseTracker.getPose().getX());
+                telemetry.addData("angle", PoseTracker.getPose().getAngle());
                 break;
             case 2:
-                state = RobotState.DROP;
+                Drivetrain.moveRobot(new Pose2D(new Vector(0, 30000) , 0), telemetry);
+                state = RobotState.DEPLETE;
                 break;
             case 3:
-                waitAuto(500);
 
         }
 
@@ -101,7 +106,12 @@ public class Autonomous extends LinearOpMode {
         Claw.operate(clawState);
         Wrist.operate(wristState);
 
-        if (Drivetrain.isFinished()){actionNum++;}
+        PoseTracker.update();
+
+        if (Drivetrain.isFinished){
+            actionNum++;
+            Drivetrain.isFinished = false;
+        }
     }
 
     private static long startTime;
@@ -123,6 +133,7 @@ public class Autonomous extends LinearOpMode {
         waitForStart();
         while (opModeIsActive()) {
             operate();
+            telemetry.update();
         }
     }
 }

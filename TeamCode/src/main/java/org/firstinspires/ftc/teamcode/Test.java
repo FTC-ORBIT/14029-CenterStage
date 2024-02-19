@@ -32,11 +32,12 @@ public class Test extends LinearOpMode {
         Gyro.init(hardwareMap);
         waitForStart();
         startTime = timer.milliseconds();
-        while (opModeIsActive() && timer.milliseconds() - startTime < 5000){
-            Drivetrain.operate(new Vector(0, 0.2), gamepad1.right_trigger - gamepad1.left_trigger);
-
-
+        while (opModeIsActive() && timer.milliseconds() - startTime < 3500){
+            Drivetrain.operate(new Vector(0.4, -0.1), 0);
         }
+//        while (opModeIsActive() && timer.milliseconds() - startTime < 1000){
+//            Drivetrain.operate(new Vector(0, 0), 0.2);
+//        }
 
     }
 }

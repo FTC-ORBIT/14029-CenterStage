@@ -4,6 +4,7 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
+import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.robotSubSystems.elevator.Elevator;
 import org.firstinspires.ftc.teamcode.robotSubSystems.elevator.ElevatorConstance;
 import org.firstinspires.ftc.teamcode.robotSubSystems.poseTracker.PoseTracker;
@@ -62,14 +63,15 @@ public class Drivetrain {
     private static PID moveRobotPID = new PID(DrivetrainConstants.moveRobotKp, DrivetrainConstants.moveRobotKi, DrivetrainConstants.moveRobotKd, DrivetrainConstants.moveRobotKf, DrivetrainConstants.moveRobotIzone, DrivetrainConstants.moveRobotMaxSpeed, DrivetrainConstants.moveRobotMinSpeed);
 
     private static PID turnRobotPID = new PID(DrivetrainConstants.turnRobotKp, DrivetrainConstants.turnRobotKi, DrivetrainConstants.turnRobotKd, DrivetrainConstants.turnRobotKf, DrivetrainConstants.turnRobotIzone, DrivetrainConstants.turnRobotMaxSpeed, DrivetrainConstants.turnRobotMinSpeed);
-    private static boolean isFinished = false;
+    public static boolean isFinished = false;
     private static boolean firstTime = true;
 
     private static double lfPower = 0;
     private static double rfPower = 0;
 
-    public static void moveRobot(Pose2D wanted) {
+    public static void moveRobot(Pose2D wanted , Telemetry telemetry) {
         wanted.vector.rotate(Angle.wrapAngle0_360(Gyro.getAngle()));
+
 
         final double lfWanted = wanted.getY() + wanted.getX();
         final double rfWanted = wanted.getY() - wanted.getX();
@@ -79,10 +81,11 @@ public class Drivetrain {
         final double rfCurrent = PoseTracker.getPose().getY() - PoseTracker.getPose().getX();
 
 
+
         final double lfError = lfWanted - lfCurrent;
         final double rfError = rfWanted - rfCurrent;
 
-            if (lfError > rfError) {
+            if (lfError > rfError || true) {
                 moveRobotPID.setWanted(lfWanted);
                 lfPower = moveRobotPID.update(lfCurrent);
                 rfPower = (rfError / lfError) * lfPower;
@@ -100,32 +103,42 @@ public class Drivetrain {
 
         double rotationPower = turnRobotPID.update(PoseTracker.getPose().getAngle());
 
+        telemetry.addData("power", lfPower);
+
         dtMotors[0].setPower(lfPower + rotationPower);
         dtMotors[1].setPower(rfPower - rotationPower);
         dtMotors[2].setPower(rfPower + rotationPower);
         dtMotors[3].setPower(lfPower - rotationPower);
 
-        final boolean isFinishedLf = Math.abs(lfWanted) - 30 < Math.abs(lfCurrent) && Math.abs(lfCurrent) < Math.abs(lfWanted) + 30;
-        final boolean isFinishedRf = Math.abs(rfWanted) - 30 < Math.abs(rfCurrent) && Math.abs(rfCurrent) < Math.abs(rfWanted) + 30;
+        final boolean isFinishedLf = Math.abs(lfWanted) - 300 < Math.abs(lfCurrent) && Math.abs(lfCurrent) < Math.abs(lfWanted) + 300;
+        final boolean isFinishedRf = Math.abs(rfWanted) - 300 < Math.abs(rfCurrent) && Math.abs(rfCurrent) < Math.abs(rfWanted) + 300;
         final boolean isFinishedTurning = Math.abs(wanted.getAngle()) - 30 < Math.abs(PoseTracker.getPose().getAngle()) && Math.abs(PoseTracker.getPose().getAngle()) < Math.abs(wanted.getAngle()) + 30;
 
         isFinished = isFinishedLf && isFinishedRf && isFinishedTurning;
+        if(isFinished){
+            breakMotors();
+        }
     }
 
-    public static boolean isFinished() {
-        return isFinished;
-    }
+
 
     public static Vector getEncoderPos() {
         return new Vector(0, dtMotors[3].getCurrentPosition());//TODO: change to the right motor
     }
 
+    public static void resetEncoders(){
+        dtMotors[3].setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        dtMotors[3].setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+    }
 
-    public void stop() {
+
+    private static void breakMotors() {
         for (DcMotor motor : dtMotors) {
             motor.setPower(0);
         }
     }
+
+
 
     public double ticksToCm(double ticks) {
         return ticks * DrivetrainConstants.ticksToCM;

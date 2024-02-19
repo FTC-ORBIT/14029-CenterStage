@@ -8,13 +8,13 @@ public class DrivetrainConstants {
     public static final double maxDriveSpeed = 1;
     public static final double minDriveSpeed = 0;
 
-    public static final double moveRobotKp = 0;
+    public static final double moveRobotKp = 0.000025;
     public static final double moveRobotKi = 0;
     public static final double moveRobotKd = 0;
     public static final double moveRobotKf = 0;
     public static final double moveRobotIzone = 0;
-    public static final double moveRobotMaxSpeed = 0;
-    public static final double moveRobotMinSpeed = 0;
+    public static final double moveRobotMaxSpeed = 0.6;
+    public static final double moveRobotMinSpeed = 0.2;
 
 
     public static final double turnRobotKp = 0;
