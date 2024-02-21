@@ -49,11 +49,13 @@ public class Elevator {
                 case LEVEL3:
                     wantedPos = ElevatorConstance.level3Pos;
                     break;
+                case MOVE:
+                    wantedPos = 0;
             }
             lastWantedState = wantedState;
         }
         if (wantedState != ElevatorState.INTAKE) {
-            wantedPos -= (int) gamepadVal * 10;
+            wantedPos -= (int) gamepadVal * 50;
         }
 
         changeLevelPID.setWanted(wantedPos);

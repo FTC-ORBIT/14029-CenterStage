@@ -29,6 +29,7 @@ public class Drivetrain {
         }
         dtMotors[0].setDirection(DcMotorSimple.Direction.REVERSE);
         dtMotors[3].setDirection(DcMotorSimple.Direction.REVERSE);
+        resetEncoders();
     }
 
     public static void operate(Vector vector, double rotation) {
@@ -70,7 +71,9 @@ public class Drivetrain {
     private static double rfPower = 0;
 
     public static void moveRobot(Pose2D wanted , Telemetry telemetry) {
-        wanted.vector.rotate(Angle.wrapAngle0_360(Gyro.getAngle()));
+//        wanted.vector.rotate(Angle.wrapAngle0_360(Gyro.getAngle()));
+
+
 
 
         final double lfWanted = wanted.getY() + wanted.getX();
@@ -84,6 +87,8 @@ public class Drivetrain {
 
         final double lfError = lfWanted - lfCurrent;
         final double rfError = rfWanted - rfCurrent;
+
+
 
             if (lfError > rfError || true) {
                 moveRobotPID.setWanted(lfWanted);
@@ -105,19 +110,46 @@ public class Drivetrain {
 
         telemetry.addData("power", lfPower);
 
-        dtMotors[0].setPower(lfPower + rotationPower);
-        dtMotors[1].setPower(rfPower - rotationPower);
-        dtMotors[2].setPower(rfPower + rotationPower);
-        dtMotors[3].setPower(lfPower - rotationPower);
+        final boolean isFinishedTurning;
+         boolean isFinishedLf = false;
+         boolean isFinishedRf = false;
 
-        final boolean isFinishedLf = Math.abs(lfWanted) - 300 < Math.abs(lfCurrent) && Math.abs(lfCurrent) < Math.abs(lfWanted) + 300;
-        final boolean isFinishedRf = Math.abs(rfWanted) - 300 < Math.abs(rfCurrent) && Math.abs(rfCurrent) < Math.abs(rfWanted) + 300;
-        final boolean isFinishedTurning = Math.abs(wanted.getAngle()) - 30 < Math.abs(PoseTracker.getPose().getAngle()) && Math.abs(PoseTracker.getPose().getAngle()) < Math.abs(wanted.getAngle()) + 30;
+        if (wanted.getY() != 0){
+            dtMotors[0].setPower(lfPower);
+            dtMotors[1].setPower(rfPower);
+            dtMotors[2].setPower(rfPower);
+            dtMotors[3].setPower(lfPower);
+            isFinishedTurning = false;
 
-        isFinished = isFinishedLf && isFinishedRf && isFinishedTurning;
+            isFinishedLf = Math.abs(lfWanted) - 300 < Math.abs(lfCurrent) && Math.abs(lfCurrent) < Math.abs(lfWanted) + 300;
+            isFinishedRf = Math.abs(rfWanted) - 300 < Math.abs(rfCurrent) && Math.abs(rfCurrent) < Math.abs(rfWanted) + 300;
+
+        }else {
+            dtMotors[0].setPower(+ rotationPower);
+            dtMotors[1].setPower(+ rotationPower);
+            dtMotors[2].setPower(- rotationPower);
+            dtMotors[3].setPower(- rotationPower);
+            isFinishedTurning = (Math.abs(wanted.getAngle()) - 1 < Math.abs(PoseTracker.getPose().getAngle()) && Math.abs(PoseTracker.getPose().getAngle()) < Math.abs(wanted.getAngle()) + 1) && (Math.signum(wanted.getAngle()) == Math.signum(PoseTracker.getPose().getAngle()) || wanted.getAngle() == 0);
+            isFinishedLf = false;
+            telemetry.addData("angle", PoseTracker.getPose().getAngle());
+            telemetry.addData("wanted", wanted.getAngle());
+        }
+
+
+
+
+        isFinished = (isFinishedLf && isFinishedRf) || isFinishedTurning;
         if(isFinished){
             breakMotors();
         }
+
+    }
+
+    public static void driveByTime(double power){
+        dtMotors[0].setPower(-power);
+        dtMotors[1].setPower(-power);
+        dtMotors[2].setPower(-power);
+        dtMotors[3].setPower(-power);
     }
 
 
@@ -132,7 +164,7 @@ public class Drivetrain {
     }
 
 
-    private static void breakMotors() {
+    public static void breakMotors() {
         for (DcMotor motor : dtMotors) {
             motor.setPower(0);
         }

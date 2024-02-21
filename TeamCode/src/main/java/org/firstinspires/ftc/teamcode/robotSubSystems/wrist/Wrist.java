@@ -29,15 +29,18 @@ public class Wrist {
         switch (state){
             case DEPLETE:
                 rightServo.setPosition(WristConstance.rightServoDepletePos);
-                leftServo.setPosition(WristConstance.leftServoDepletePos);
+//                leftServo.setPosition(WristConstance.leftServoDepletePos);
                 break;
             case INTAKE:
                 rightServo.setPosition(WristConstance.rightServoIntakePos);
-                leftServo.setPosition(WristConstance.leftServoIntakePos);
+//                leftServo.setPosition(WristConstance.leftServoIntakePos);
                 break;
             case GROUND:
                 rightServo.setPosition(WristConstance.rightServoGroundPos);
-                leftServo.setPosition(WristConstance.leftServoGroundPos);
+//                leftServo.setPosition(WristConstance.leftServoGroundPos);
+                break;
+            case MIDDLE:
+                rightServo.setPosition(WristConstance.rightServoMIddlePos);
                 break;
         }
     }

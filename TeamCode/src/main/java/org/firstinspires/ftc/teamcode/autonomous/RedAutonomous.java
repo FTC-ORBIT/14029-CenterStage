@@ -23,10 +23,11 @@ import org.firstinspires.ftc.teamcode.sensors.Gyro;
 import org.firstinspires.ftc.teamcode.utils.Pose2D;
 import org.firstinspires.ftc.teamcode.utils.Vector;
 
-@com.qualcomm.robotcore.eventloop.opmode.Autonomous(name = "autonomous")
-public class Autonomous extends LinearOpMode {
+@com.qualcomm.robotcore.eventloop.opmode.Autonomous(name = "red autonomous")
+public class RedAutonomous extends LinearOpMode {
 
     private static int actionNum = 1;
+    private static final ElapsedTime timer = new ElapsedTime();
     private static RobotState state = RobotState.TRAVEL;
 
     ElevatorState elevatorState = ElevatorState.INTAKE;
@@ -50,17 +51,41 @@ public class Autonomous extends LinearOpMode {
         actionNum = gamepad1.a ? 1 : actionNum;
         switch (actionNum){
             case 1:
-                Drivetrain.moveRobot(new Pose2D(new Vector(0,0), 90), telemetry);
-
+                Drivetrain.moveRobot(new Pose2D(new Vector(0,41000), 0), telemetry);
+                telemetry.addData("posY", PoseTracker.getPose().getY());
+                telemetry.addData("posX", PoseTracker.getPose().getX());
+                telemetry.addData("angle", PoseTracker.getPose().getAngle());
                 break;
             case 2:
-                Drivetrain.moveRobot(new Pose2D(new Vector(0,0), -90), telemetry);
+                Drivetrain.moveRobot(new Pose2D(new Vector(0, 30000) , 0), telemetry);
+                state = RobotState.DEPLETE;
                 break;
             case 3:
+                Drivetrain.moveRobot(new Pose2D(new Vector(0,0), -90), telemetry);
                 state = RobotState.TRAVEL;
                 break;
             case 4:
+                Drivetrain.moveRobot(new Pose2D(new Vector(0, -35000) , 0), telemetry);
+                elevatorState = ElevatorState.LEVEL1;
                 break;
+            case 5:
+                Drivetrain.driveByTime(0.2);
+                waitAuto(2000);
+                break;
+            case 6:
+                Drivetrain.breakMotors();
+                waitAuto(1000);
+                state = RobotState.DROP;
+                break;
+            case 7:
+                Drivetrain.moveRobot(new Pose2D(new Vector(0, -26000) , 0), telemetry);
+                break;
+            case 8:
+                Drivetrain.moveRobot(new Pose2D(new Vector(0, 0) , 0), telemetry);
+                state = RobotState.INTAKE;
+                break;
+            case 9:
+                state = RobotState.TRAVEL;
         }
 
         switch (state){
@@ -115,14 +140,14 @@ public class Autonomous extends LinearOpMode {
         }
     }
 
-    private static long startTime;
+    private static double startTime;
     private static boolean hasStarted = true;
     private static void waitAuto(int millis){
         if (hasStarted) {
-            startTime = ElapsedTime.MILLIS_IN_NANO;
+            startTime = timer.milliseconds();
             hasStarted = false;
         }
-        if (millis > startTime + ElapsedTime.MILLIS_IN_NANO){
+        if (millis < timer.milliseconds() - startTime){
             actionNum++;
             hasStarted = true;
         }
@@ -138,3 +163,4 @@ public class Autonomous extends LinearOpMode {
         }
     }
 }
+

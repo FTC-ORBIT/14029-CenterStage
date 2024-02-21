@@ -23,21 +23,21 @@ import org.firstinspires.ftc.teamcode.utils.Vector;
 @TeleOp(name = "Test")
 public class Test extends LinearOpMode {
 
-    private static final ElapsedTime timer = new ElapsedTime();
-    private static double startTime = 0;
 
+    DcMotor motor;
     @Override
     public void runOpMode() throws InterruptedException {
-        Drivetrain.init(hardwareMap);
+        Wrist.init(hardwareMap);
         Gyro.init(hardwareMap);
         waitForStart();
-        startTime = timer.milliseconds();
-        while (opModeIsActive() && timer.milliseconds() - startTime < 3500){
-            Drivetrain.operate(new Vector(0.4, -0.1), 0);
+        while (opModeIsActive()){
+            if (gamepad1.a) {
+                Wrist.operate(WristState.DEPLETE);
+            }else {
+                Wrist.operate(WristState.INTAKE);
+            }
+
         }
-//        while (opModeIsActive() && timer.milliseconds() - startTime < 1000){
-//            Drivetrain.operate(new Vector(0, 0), 0.2);
-//        }
 
     }
 }

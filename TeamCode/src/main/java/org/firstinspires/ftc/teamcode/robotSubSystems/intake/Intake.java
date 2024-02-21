@@ -59,15 +59,15 @@ public class Intake {
                 }
                 if (firstTimePressed){
                     startPressedTime = timer.milliseconds();}
-                if (timer.milliseconds() - startPressedTime > 200){
+                if (timer.milliseconds() - startPressedTime > 500){
                     intakeServo.setPosition(IntakeConstance.intakeServoOpenPos);
                 }
                 upperBar.setPower(1);
                 sideWheels.setPower(1);
                 break;
             case DEPLETE:
-                upperBar.setPower(-0.6);
-                sideWheels.setPower(-0.6);
+                upperBar.setPower(-0.4);
+                sideWheels.setPower(-0.4);
                 break;
             case STOP:
                 upperBar.setPower(0);

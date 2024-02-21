@@ -19,32 +19,40 @@ public class PoseTracker {
     private static double lastXVAl = 0;
     private static double lastYVAl = 0;
 
-    private static double changedXVAl = 0;
-    private static double changedYVAl = 0;
+
+
 
 
     private static Vector encoders = new Vector(0,0);
+
+    private static Vector changed = encoders;
+
 
 
 
     public static void update(){
         encoders = Drivetrain.getEncoderPos();
-        encoders.x += PoseTrackerConstance.xErrorVal * Gyro.getDeltaAngle();
-        encoders.y += PoseTrackerConstance.yErrorVal * Gyro.getDeltaAngle();
+        encoders.x -= PoseTrackerConstance.xErrorVal * Gyro.getDeltaAngle();
+        encoders.y -= PoseTrackerConstance.yErrorVal * Gyro.getDeltaAngle();
 
-        changedXVAl = encoders.x - lastXVAl;
-        changedYVAl = encoders.y - lastYVAl;
+        changed.x = encoders.x - lastXVAl;
+        changed.y = encoders.y - lastYVAl;
 
         lastXVAl = encoders.x;
         lastYVAl = encoders.y;
 
-        encoders.rotate(Angle.wrapAngle0_360(Gyro.getAngle()));
+//        changed = changed.rotate(Angle.wrapAngle0_360(Gyro.getAngle()));
 
-        pose.setX((float) (pose.getX() + changedXVAl));
-        pose.setY((float) (pose.getY() + changedYVAl));
-        pose.setAngle(Angle.wrapAngle0_360(Gyro.getAngle()));
+        pose.setX((float) (pose.getX() + changed.x));
+        pose.setY((float) (pose.getY() + changed.y));
+        pose.setAngle(-Angle.wrapAngle0_360(Gyro.getAngle()));
 
         lastAngle = Gyro.getAngle();
 
+
+    }
+
+    public static void resetPos(){
+        pose = new Pose2D(new Vector(0,0),0);
     }
 }

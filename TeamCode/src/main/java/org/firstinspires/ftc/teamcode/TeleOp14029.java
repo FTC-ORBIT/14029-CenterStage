@@ -15,6 +15,7 @@ import org.firstinspires.ftc.teamcode.robotSubSystems.elevator.ElevatorState;
 import org.firstinspires.ftc.teamcode.robotSubSystems.intake.Intake;
 import org.firstinspires.ftc.teamcode.robotSubSystems.intake.IntakeState;
 import org.firstinspires.ftc.teamcode.robotSubSystems.plane.Plane;
+import org.firstinspires.ftc.teamcode.robotSubSystems.poseTracker.PoseTracker;
 import org.firstinspires.ftc.teamcode.robotSubSystems.wrist.Wrist;
 import org.firstinspires.ftc.teamcode.robotSubSystems.wrist.WristState;
 import org.firstinspires.ftc.teamcode.sensors.Gyro;
@@ -104,12 +105,13 @@ public class TeleOp14029 extends OpMode {
                 }
                 elevatorState = ElevatorState.INTAKE;
                 if (Elevator.getElevatorPos() < ElevatorConstance.moveBoxMaxPos) {
-                    wristState = WristState.INTAKE;
+                    wristState = WristState.MIDDLE;
                 }
                 if (Elevator.getElevatorPos() < ElevatorConstance.moveClawMaxPos){
                     clawState = ClawState.OPEN;
                     if (timer.milliseconds() - startIntakeStartTime > 400) {
                         intakeState = IntakeState.INTAKE;
+                        wristState = WristState.INTAKE;
                     }
                 }else {
                     clawState = ClawState.CLOSED;
@@ -156,12 +158,16 @@ public class TeleOp14029 extends OpMode {
                 }
                 break;
         }
+
+        if (gamepad2.y){wristState = WristState.INTAKE;}
+        if (gamepad2.b){Elevator.resetEncoder();}
+        if (gamepad2.dpad_up){elevatorState = ElevatorState.MOVE;}
         lastState = state;
 
         telemetry.addData("DistSensor", Intake.distanceSensor.getDistance(DistanceUnit.CM));
-        telemetry.addData("pos", Elevator.getElevatorPos());
+        telemetry.addData("posElv", Elevator.getElevatorPos());
         telemetry.addData("power", Elevator.getElevatorPosL());
-        telemetry.addData("wheel", Drivetrain.getEncoderPos());
+        telemetry.addData("pos", PoseTracker.getPose().vector);
 
         telemetry.addData("time", timer.milliseconds());
 
@@ -172,6 +178,7 @@ public class TeleOp14029 extends OpMode {
         Intake.servoTest(gamepad2);
         Wrist.operate(wristState);
         Plane.operate(planeState);
+        PoseTracker.update();
         Gyro.setLastAngle(Gyro.getAngle());
     }
 }
