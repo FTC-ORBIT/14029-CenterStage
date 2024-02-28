@@ -79,5 +79,14 @@ public class Intake {
 
     }
 
+    public static double getEncoderPos() {
+        return upperBar.getCurrentPosition();
+    }
+
+    public static void resetEncoder(){
+        upperBar.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        upperBar.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+    }
+
 
 }

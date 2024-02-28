@@ -49,7 +49,11 @@ public class TeleOp14029 extends OpMode {
     private static double stopIntakeStartTime = 0;
     private static double startIntakeStartTime = 0;
     private static boolean firstTimeInIntake = true;
+
+    private static boolean firstTimeInTravel = true;
+    private static double startTimeInTravel = 0;
     private static RobotState lastState = RobotState.INTAKE;
+    private static ElevatorState lastElevatorState = ElevatorState.INTAKE;
     @Override
     public void loop() {
 
@@ -103,7 +107,9 @@ public class TeleOp14029 extends OpMode {
                     startIntakeStartTime = timer.milliseconds();
                     firstTimeInIntake = false;
                 }
-                elevatorState = ElevatorState.INTAKE;
+                if (timer.milliseconds() - startIntakeStartTime > 500){
+                    elevatorState = ElevatorState.INTAKE;
+                }
                 if (Elevator.getElevatorPos() < ElevatorConstance.moveBoxMaxPos) {
                     wristState = WristState.MIDDLE;
                 }
@@ -131,17 +137,24 @@ public class TeleOp14029 extends OpMode {
                 clawState = ClawState.OPEN_LEFT;
                 break;
             case TRAVEL:
-                if (firstTimeInIntake){
+                firstTimeInTravel = lastState == RobotState.INTAKE;
+                if (firstTimeInTravel){
                     stopIntakeStartTime = timer.milliseconds();
-                    firstTimeInIntake = false;
+                    firstTimeInTravel = false;
+                    lastElevatorState = elevatorState;
                 }
                 clawState = ClawState.CLOSED;
-                if (timer.milliseconds() - stopIntakeStartTime > 400){
+                if (timer.milliseconds() - stopIntakeStartTime < 1000){
+                    elevatorState = ElevatorState.INTAKE;
+                }else {
+                    elevatorState = elevatorState == ElevatorState.INTAKE ? lastElevatorState : elevatorState;
+                }
+                if (timer.milliseconds() - stopIntakeStartTime > 600){
                     intakeState = IntakeState.STOP;
                 }
                 if (Elevator.getElevatorPos() > ElevatorConstance.moveBoxMinPos){
                     wristState = WristState.DEPLETE;
-                }else if (timer.milliseconds() - stopIntakeStartTime > 100){
+                }else if (timer.milliseconds() - stopIntakeStartTime > 400){
                     wristState = WristState.GROUND;
                 }
                 break;

@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode.robotSubSystems.poseTracker;
 
 import org.firstinspires.ftc.teamcode.robotSubSystems.drivetrain.Drivetrain;
+import org.firstinspires.ftc.teamcode.robotSubSystems.intake.Intake;
 import org.firstinspires.ftc.teamcode.sensors.Gyro;
 import org.firstinspires.ftc.teamcode.utils.Angle;
 import org.firstinspires.ftc.teamcode.utils.Pose2D;
@@ -31,17 +32,18 @@ public class PoseTracker {
 
 
     public static void update(){
-        encoders = Drivetrain.getEncoderPos();
-        encoders.x -= PoseTrackerConstance.xErrorVal * Gyro.getDeltaAngle();
-        encoders.y -= PoseTrackerConstance.yErrorVal * Gyro.getDeltaAngle();
+        encoders = new Vector(0, Drivetrain.getEncoderPos());
 
         changed.x = encoders.x - lastXVAl;
         changed.y = encoders.y - lastYVAl;
 
+//        changed.x -= PoseTrackerConstance.xErrorVal * Gyro.getDeltaAngle();
+//        changed.y -= PoseTrackerConstance.yErrorVal * Gyro.getDeltaAngle();
+
         lastXVAl = encoders.x;
         lastYVAl = encoders.y;
 
-//        changed = changed.rotate(Angle.wrapAngle0_360(Gyro.getAngle()));
+//        changed = changed.rotate(-Math.toRadians(Angle.wrapAngle0_360(Gyro.getAngle())));
 
         pose.setX((float) (pose.getX() + changed.x));
         pose.setY((float) (pose.getY() + changed.y));

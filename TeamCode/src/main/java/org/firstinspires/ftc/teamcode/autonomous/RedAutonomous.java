@@ -29,11 +29,23 @@ public class RedAutonomous extends LinearOpMode {
     private static int actionNum = 1;
     private static final ElapsedTime timer = new ElapsedTime();
     private static RobotState state = RobotState.TRAVEL;
+    private static RobotState lastState = RobotState.TRAVEL;
+
 
     ElevatorState elevatorState = ElevatorState.INTAKE;
     IntakeState intakeState = IntakeState.STOP;
     ClawState clawState = ClawState.CLOSED;
     WristState wristState = WristState.INTAKE;
+
+    private static double stopIntakeStartTime = 0;
+    private static double startIntakeStartTime = 0;
+    private static boolean firstTimeInIntake = true;
+
+    private static boolean firstTimeInTravel = true;
+
+    ElevatorState lastElevatorState = ElevatorState.INTAKE;
+
+
 
     public void initRobot() {
         Gyro.init(hardwareMap);
@@ -88,16 +100,28 @@ public class RedAutonomous extends LinearOpMode {
                 state = RobotState.TRAVEL;
         }
 
+
+        if (state != lastState){
+            firstTimeInIntake = true;
+        }
         switch (state){
             case INTAKE:
-                elevatorState = ElevatorState.INTAKE;
+                if (firstTimeInIntake){
+                    startIntakeStartTime = timer.milliseconds();
+                    firstTimeInIntake = false;
+                }
+                if (timer.milliseconds() - startIntakeStartTime > 500){
+                    elevatorState = ElevatorState.INTAKE;
+                }
                 if (Elevator.getElevatorPos() < ElevatorConstance.moveBoxMaxPos) {
-                    wristState = WristState.INTAKE;
+                    wristState = WristState.MIDDLE;
                 }
                 if (Elevator.getElevatorPos() < ElevatorConstance.moveClawMaxPos){
                     clawState = ClawState.OPEN;
-                    intakeState = IntakeState.INTAKE;
-
+                    if (timer.milliseconds() - startIntakeStartTime > 400) {
+                        intakeState = IntakeState.INTAKE;
+                        wristState = WristState.INTAKE;
+                    }
                 }else {
                     clawState = ClawState.CLOSED;
                     intakeState = IntakeState.STOP;
@@ -116,28 +140,53 @@ public class RedAutonomous extends LinearOpMode {
                 clawState = ClawState.OPEN_LEFT;
                 break;
             case TRAVEL:
+                firstTimeInTravel = lastState == RobotState.INTAKE;
+                if (firstTimeInTravel){
+                    stopIntakeStartTime = timer.milliseconds();
+                    firstTimeInTravel = false;
+                    lastElevatorState = elevatorState;
+                }
                 clawState = ClawState.CLOSED;
-                intakeState = IntakeState.STOP;
+                if (timer.milliseconds() - stopIntakeStartTime < 1000){
+                    elevatorState = ElevatorState.INTAKE;
+                }else {
+                    elevatorState = elevatorState == ElevatorState.INTAKE ? lastElevatorState : elevatorState;
+                }
+                if (timer.milliseconds() - stopIntakeStartTime > 600){
+                    intakeState = IntakeState.STOP;
+                }
                 if (Elevator.getElevatorPos() > ElevatorConstance.moveBoxMinPos){
                     wristState = WristState.DEPLETE;
+                }else if (timer.milliseconds() - stopIntakeStartTime > 400){
+                    wristState = WristState.GROUND;
                 }
                 break;
             case DEPLETE:
                 intakeState = IntakeState.DEPLETE;
+//                wristState = WristState.INTAKE;
+                break;
+            case CLIMB:
+                intakeState = IntakeState.STOP;
+                clawState = ClawState.CLOSED;
+                elevatorState = ElevatorState.INTAKE;
+                if (Elevator.getElevatorPos() < ElevatorConstance.moveBoxMaxPosClimb) {
+                    wristState = WristState.INTAKE;
+                }
                 break;
         }
+
 
         Intake.operate(intakeState);
         Elevator.operate(elevatorState, gamepad1.right_stick_y);
         Claw.operate(clawState);
         Wrist.operate(wristState);
 
-        PoseTracker.update();
 
         if (Drivetrain.isFinished){
             actionNum++;
             Drivetrain.isFinished = false;
         }
+        lastState = state;
     }
 
     private static double startTime;

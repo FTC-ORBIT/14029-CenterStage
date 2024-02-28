@@ -27,16 +27,31 @@ public class Test extends LinearOpMode {
     DcMotor motor;
     @Override
     public void runOpMode() throws InterruptedException {
+        Drivetrain.init(hardwareMap);
         Wrist.init(hardwareMap);
+        Intake.init(hardwareMap);
         Gyro.init(hardwareMap);
+        Gyro.resetGyro();
+        PoseTracker.resetPos();
+        Drivetrain.resetEncoders();
+        Intake.resetEncoder();
         waitForStart();
         while (opModeIsActive()){
-            if (gamepad1.a) {
-                Wrist.operate(WristState.DEPLETE);
-            }else {
+//            if (gamepad1.a) {
+//                PoseTracker.update();
+//            }
+//            Drivetrain.operate(new Vector(gamepad1.left_stick_x, -gamepad1.left_stick_y), gamepad1.right_trigger - gamepad1.left_trigger);
+//            telemetry.addData("posY", PoseTracker.getPose().getY());
+//            telemetry.addData("posX", PoseTracker.getPose().getX());
+//            telemetry.addData("delta", Gyro.getDeltaAngle());
+//            telemetry.addData("angle", Gyro.getAngle());
+//            telemetry.update();
+//            Gyro.setLastAngle(Gyro.getAngle());
+            if (!gamepad1.a){
                 Wrist.operate(WristState.INTAKE);
+            }else {
+                Wrist.operate(WristState.DEPLETE);
             }
-
         }
 
     }

@@ -110,6 +110,7 @@ public class Autonomous extends LinearOpMode {
         PoseTracker.update();
 
         if (Drivetrain.isFinished){
+            PoseTracker.resetPos();
             actionNum++;
             Drivetrain.isFinished = false;
         }
