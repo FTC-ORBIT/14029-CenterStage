@@ -49,8 +49,14 @@ public class Elevator {
                 case LEVEL3:
                     wantedPos = ElevatorConstance.level3Pos;
                     break;
+                case LEVEL4:
+                    wantedPos = ElevatorConstance.level4Pos;
+                    break;
                 case MOVE:
                     wantedPos = 0;
+                case AUTONOMOUS_POS:
+                    wantedPos = ElevatorConstance.autonomousPos;
+                    break;
             }
             lastWantedState = wantedState;
         }

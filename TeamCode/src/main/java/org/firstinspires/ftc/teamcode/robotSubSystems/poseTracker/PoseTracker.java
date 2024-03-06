@@ -56,5 +56,10 @@ public class PoseTracker {
 
     public static void resetPos(){
         pose = new Pose2D(new Vector(0,0),0);
+        Drivetrain.resetEncoders();
+//        Gyro.resetGyro();
+        Intake.resetEncoder();
+        lastXVAl = 0;
+        lastYVAl = 0;
     }
 }

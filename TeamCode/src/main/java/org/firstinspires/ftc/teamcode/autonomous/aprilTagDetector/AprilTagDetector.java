@@ -21,10 +21,9 @@ package org.firstinspires.ftc.teamcode.autonomous.aprilTagDetector;
 // */
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import com.qualcomm.robotcore.eventloop.opmode.OpMode;
-import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
+import org.firstinspires.ftc.teamcode.autonomous.camera.ElementPosition;
 import org.openftc.apriltag.AprilTagDetection;
 import org.openftc.easyopencv.OpenCvCamera;
 import org.openftc.easyopencv.OpenCvCameraFactory;
@@ -35,7 +34,7 @@ import java.util.ArrayList;
 
 public class AprilTagDetector {
 
-    private static TagPosition tagPosition = TagPosition.LEFT;
+    private static ElementPosition tagPosition = ElementPosition.LEFT;
 
     static OpenCvCamera camera;
     static AprilTagDetectionPipeline aprilTagDetectionPipeline;
@@ -114,15 +113,15 @@ public class AprilTagDetector {
 
                 if (tagOfInterest != null) {
                     if (tagOfInterest.pose.x < midTagPose) {
-                        tagPosition = TagPosition.MIDDLE;
+                        tagPosition = ElementPosition.MIDDLE;
                     } else if (tagOfInterest.pose.x > midTagPose) {
-                        tagPosition = TagPosition.RIGHT;
+                        tagPosition = ElementPosition.RIGHT;
                     }
                 }
             } else {
                 opMode.telemetry.addLine("Don't see tag of interest :(");
 
-                tagPosition = TagPosition.LEFT;
+                tagPosition = ElementPosition.LEFT;
 
 
                 if (tagOfInterest == null) {
@@ -158,7 +157,7 @@ public class AprilTagDetector {
         /* You wouldn't have this in your autonomous, this is just to prevent the sample from ending */
     }
 
-    public static TagPosition getTagPosition() {
+    public static ElementPosition getTagPosition() {
         return tagPosition;
     }
 

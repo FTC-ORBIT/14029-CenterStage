@@ -53,7 +53,7 @@ public class Intake {
                     firstTimeInIntake = false;
                     startTime = timer.milliseconds();
                 }
-                if(distanceSensor.getDistance(DistanceUnit.MM) < 33 && firstTimePressed && timer.milliseconds() - startTime > 400) {
+                if(distanceSensor.getDistance(DistanceUnit.MM) < 45 && firstTimePressed && timer.milliseconds() - startTime > 400) {
                     startPressedTime = timer.milliseconds();
                     firstTimePressed = false;
                 }

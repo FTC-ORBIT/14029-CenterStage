@@ -62,7 +62,7 @@ public class TeleOp14029 extends OpMode {
         if (gamepad1.x){ state = RobotState.DROP; }
         if (gamepad1.y){ state = RobotState.TRAVEL; }
         if (gamepad1.back) {Gyro.resetGyro();}
-        if (gamepad2.back) {planeState = true;}
+        if (gamepad2.back || gamepad1.left_stick_button) {planeState = true;}
         if (gamepad2.a){planeState = false;}
         if (gamepad1.left_bumper){
             if (state == RobotState.DROP_RIGHT || state == RobotState.DROP) {
@@ -85,16 +85,22 @@ public class TeleOp14029 extends OpMode {
             state = RobotState.TRAVEL;
             elevatorState = ElevatorState.LEVEL1;
         }
-        if (gamepad1.dpad_right || gamepad1.dpad_left){
+        if (gamepad1.dpad_right){
             state = RobotState.TRAVEL;
             elevatorState = ElevatorState.LEVEL2;
         }
-        if (gamepad1.dpad_up){
+        if (gamepad1.dpad_left){
             state = RobotState.TRAVEL;
             elevatorState = ElevatorState.LEVEL3;
         }
-
-//        if (gamepad1.left_stick_button){wristState = WristState.GROUND;}
+        if (gamepad1.dpad_up){
+            state = RobotState.TRAVEL;
+            elevatorState = ElevatorState.LEVEL4;
+        }
+        if (gamepad1.start){
+            state = RobotState.TRAVEL;
+            elevatorState = ElevatorState.AUTONOMOUS_POS;
+        }
 
 
 
@@ -154,7 +160,7 @@ public class TeleOp14029 extends OpMode {
                 }
                 if (Elevator.getElevatorPos() > ElevatorConstance.moveBoxMinPos){
                     wristState = WristState.DEPLETE;
-                }else if (timer.milliseconds() - stopIntakeStartTime > 400){
+                }else if (timer.milliseconds() - stopIntakeStartTime > 300){
                     wristState = WristState.GROUND;
                 }
                 break;
