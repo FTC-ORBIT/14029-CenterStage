@@ -138,7 +138,7 @@ public class Drivetrain {
             dtMotors[1].setPower(rfPower + rotationPower);
             dtMotors[2].setPower(rfPower - rotationPower);
             dtMotors[3].setPower(lfPower - rotationPower);
-            isFinishedTurning = (Math.abs(wanted.getAngle()) - 1.5 < Math.abs(-Gyro.getAngle()) && Math.abs(-Gyro.getAngle()) < Math.abs(wanted.getAngle()) + 1.5) && (Math.signum(wanted.getAngle()) == Math.signum(-Gyro.getAngle()) || wanted.getAngle() == 0);
+            isFinishedTurning = (Math.abs(wanted.getAngle()) - 1 < Math.abs(-Gyro.getAngle()) && Math.abs(-Gyro.getAngle()) < Math.abs(wanted.getAngle()) + 1) && (Math.signum(wanted.getAngle()) == Math.signum(-Gyro.getAngle()) || wanted.getAngle() == 0);
             telemetry.addData("angle", PoseTracker.getPose().getAngle());
             telemetry.addData("wanted", wanted.getAngle());
 //        }

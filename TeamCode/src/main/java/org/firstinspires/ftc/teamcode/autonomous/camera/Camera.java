@@ -13,7 +13,7 @@ public class Camera{
 
     private static OpenCvWebcam webcam1 = null;
 
-    public static void init(HardwareMap hardwareMap) {
+    public static void init(HardwareMap hardwareMap, boolean isRed) {
         //Initiates the camera
         int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
         //Camera name from init in the Driver Station
@@ -21,9 +21,15 @@ public class Camera{
         //Camera monitor view
         Constants.camera = OpenCvCameraFactory.getInstance().createWebcam(webcamName, cameraMonitorViewId);
         //Creates an object to show the camera view in the Telemetry area
-        RedPipeline pipeline = new RedPipeline();
+        BluePipeline bluePipeline = new BluePipeline();
+        RedPipeline redPipeline = new RedPipeline();
         //Sets the pipeline
-        Constants.camera.setPipeline(pipeline);
+
+        if (isRed) {
+            Constants.camera.setPipeline(redPipeline);
+        }else {
+            Constants.camera.setPipeline(bluePipeline);
+        }
         //Opening the camera
         OpenCvCamera finalCamera = Constants.camera;
         Constants.camera.openCameraDeviceAsync(new OpenCvCamera.AsyncCameraOpenListener() {

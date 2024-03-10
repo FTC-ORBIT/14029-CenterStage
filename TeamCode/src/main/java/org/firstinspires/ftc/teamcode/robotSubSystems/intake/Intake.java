@@ -74,6 +74,10 @@ public class Intake {
                 sideWheels.setPower(0);
                 intakeServo.setPosition(IntakeConstance.intakeServoClosedPos);
                 break;
+            case DEPLETE_AUTO:
+                upperBar.setPower(0.4);
+                sideWheels.setPower(0.4);
+                break;
         }
         lastState = state;
 

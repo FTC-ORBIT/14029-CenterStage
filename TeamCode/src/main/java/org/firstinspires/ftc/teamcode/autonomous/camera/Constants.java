@@ -1,6 +1,8 @@
 package org.firstinspires.ftc.teamcode.autonomous.camera;
 
 
+import org.opencv.core.Point;
+import org.opencv.core.Rect;
 import org.opencv.core.Scalar;
 import org.opencv.core.Size;
 import org.opencv.imgproc.Imgproc;
@@ -18,6 +20,8 @@ public final class Constants {
     public static Scalar White = new Scalar(255 , 255 , 255);
     public static Scalar Red = new Scalar(255 , 0 , 0);
     public static int binary = Imgproc.COLOR_RGB2HSV;
+
+    public static Rect cropRect = new Rect(new Point(0,270),new Point(1280,720));
     //Blur size radius
     public static Size BlurRadius = new Size(37,37);
     //camera
