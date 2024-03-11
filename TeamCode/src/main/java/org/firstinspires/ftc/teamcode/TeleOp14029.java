@@ -192,7 +192,7 @@ public class TeleOp14029 extends OpMode {
 
         Drivetrain.operate(new Vector(gamepad1.left_stick_x, -gamepad1.left_stick_y), gamepad1.right_trigger - gamepad1.left_trigger);
         Intake.operate(intakeState);
-        Elevator.operate(elevatorState, gamepad1.right_stick_y);
+        Elevator.operate(elevatorState, gamepad1.right_stick_y, -gamepad2.right_stick_y);
         Claw.operate(clawState);
         Intake.servoTest(gamepad2);
         Wrist.operate(wristState);

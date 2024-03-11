@@ -19,7 +19,7 @@ import org.firstinspires.ftc.teamcode.sensors.Gyro;
 import org.firstinspires.ftc.teamcode.utils.Pose2D;
 import org.firstinspires.ftc.teamcode.utils.Vector;
 
-@com.qualcomm.robotcore.eventloop.opmode.Autonomous(name = "autonomous")
+@com.qualcomm.robotcore.eventloop.opmode.Autonomous(name = "test")
 public class Autonomous extends LinearOpMode {
 
     private static int actionNum = 1;
@@ -141,7 +141,7 @@ public class Autonomous extends LinearOpMode {
 
 
         Intake.operate(intakeState);
-        Elevator.operate(elevatorState, gamepad1.right_stick_y);
+        Elevator.operate(elevatorState, gamepad1.right_stick_y, 0);
         Claw.operate(clawState);
         Wrist.operate(wristState);
 

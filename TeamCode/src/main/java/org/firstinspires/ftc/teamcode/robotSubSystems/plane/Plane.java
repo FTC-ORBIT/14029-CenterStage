@@ -14,9 +14,9 @@ public class Plane {
 
     public static void operate(boolean plane) {
         if (plane) {
-            planeServo.setPosition(0.9);
+            planeServo.setPosition(0.5);
         } else {
-            planeServo.setPosition(0.2);
+            planeServo.setPosition(0);
         }
     }
 }

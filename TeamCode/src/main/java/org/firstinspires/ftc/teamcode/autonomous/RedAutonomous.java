@@ -2,7 +2,6 @@ package org.firstinspires.ftc.teamcode.autonomous;
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.util.ElapsedTime;
-
 import org.firstinspires.ftc.teamcode.RobotState;
 import org.firstinspires.ftc.teamcode.autonomous.camera.Camera;
 import org.firstinspires.ftc.teamcode.autonomous.camera.ElementPosition;
@@ -22,7 +21,7 @@ import org.firstinspires.ftc.teamcode.sensors.Gyro;
 import org.firstinspires.ftc.teamcode.utils.Pose2D;
 import org.firstinspires.ftc.teamcode.utils.Vector;
 
-@com.qualcomm.robotcore.eventloop.opmode.Autonomous(name = "red autonomous")
+@com.qualcomm.robotcore.eventloop.opmode.Autonomous(name = "red")
 public class RedAutonomous extends LinearOpMode {
 
     private static int actionNum = 1;
@@ -140,17 +139,19 @@ public class RedAutonomous extends LinearOpMode {
             case MIDDLE:
                 switch (actionNum){
                     case 1:
-                        Drivetrain.moveRobot(new Pose2D(new Vector(0,39000), 0), telemetry);
+                        Drivetrain.moveRobot(new Pose2D(new Vector(0,28000), 0), telemetry);
                         state = RobotState.TRAVEL;
                         telemetry.addData("posY", PoseTracker.getPose().getY());
                         telemetry.addData("posX", PoseTracker.getPose().getX());
                         telemetry.addData("angle", PoseTracker.getPose().getAngle());
                         break;
                     case 2:
-                        Drivetrain.moveRobot(new Pose2D(new Vector(0,-1500), 0), telemetry);
-                    case 3:
                         state = RobotState.DEPLETE;
                         waitAuto(1500);
+                        break;
+                    case 3:
+                        Drivetrain.moveRobot(new Pose2D(new Vector(0,10000), 0), telemetry);
+                        state = RobotState.TRAVEL;
                         break;
                     case 4:
                         Drivetrain.moveRobot(new Pose2D(new Vector(0, -7000) , 0), telemetry);
@@ -345,7 +346,7 @@ public class RedAutonomous extends LinearOpMode {
 
 
         Intake.operate(intakeState);
-        Elevator.operate(elevatorState, gamepad1.right_stick_y);
+        Elevator.operate(elevatorState, gamepad1.right_stick_y, 0);
         Claw.operate(clawState);
         Wrist.operate(wristState);
 
@@ -383,4 +384,3 @@ public class RedAutonomous extends LinearOpMode {
         }
     }
 }
-

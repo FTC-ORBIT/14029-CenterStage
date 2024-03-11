@@ -2,12 +2,10 @@ package org.firstinspires.ftc.teamcode.autonomous;
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.util.ElapsedTime;
-
 import org.firstinspires.ftc.teamcode.RobotState;
 import org.firstinspires.ftc.teamcode.autonomous.camera.BluePipeline;
 import org.firstinspires.ftc.teamcode.autonomous.camera.Camera;
 import org.firstinspires.ftc.teamcode.autonomous.camera.ElementPosition;
-import org.firstinspires.ftc.teamcode.autonomous.camera.RedPipeline;
 import org.firstinspires.ftc.teamcode.robotSubSystems.claw.Claw;
 import org.firstinspires.ftc.teamcode.robotSubSystems.claw.ClawState;
 import org.firstinspires.ftc.teamcode.robotSubSystems.drivetrain.Drivetrain;
@@ -23,7 +21,7 @@ import org.firstinspires.ftc.teamcode.sensors.Gyro;
 import org.firstinspires.ftc.teamcode.utils.Pose2D;
 import org.firstinspires.ftc.teamcode.utils.Vector;
 
-@com.qualcomm.robotcore.eventloop.opmode.Autonomous(name = "blue autonomous")
+@com.qualcomm.robotcore.eventloop.opmode.Autonomous(name = "blue")
 public class BlueAutonomous extends LinearOpMode {
 
     private static int actionNum = 1;
@@ -79,7 +77,7 @@ public class BlueAutonomous extends LinearOpMode {
             case RIGHT:
                 switch (actionNum){
                     case 1:
-                        Drivetrain.moveRobot(new Pose2D(new Vector(0,41000), 0), telemetry);
+                        Drivetrain.moveRobot(new Pose2D(new Vector(0,38000), 0), telemetry);
                         telemetry.addData("posY", PoseTracker.getPose().getY());
                         telemetry.addData("posX", PoseTracker.getPose().getX());
                         telemetry.addData("angle", PoseTracker.getPose().getAngle());
@@ -141,20 +139,22 @@ public class BlueAutonomous extends LinearOpMode {
             case MIDDLE:
                 switch (actionNum){
                     case 1:
-                        Drivetrain.moveRobot(new Pose2D(new Vector(0,39000), 0), telemetry);
+                        Drivetrain.moveRobot(new Pose2D(new Vector(0,30000), 0), telemetry);
                         state = RobotState.TRAVEL;
                         telemetry.addData("posY", PoseTracker.getPose().getY());
                         telemetry.addData("posX", PoseTracker.getPose().getX());
                         telemetry.addData("angle", PoseTracker.getPose().getAngle());
                         break;
                     case 2:
-                        Drivetrain.moveRobot(new Pose2D(new Vector(0,-1500), 0), telemetry);
-                    case 3:
                         state = RobotState.DEPLETE;
                         waitAuto(1500);
                         break;
+                    case 3:
+                        Drivetrain.moveRobot(new Pose2D(new Vector(0,6000), 0), telemetry);
+                        state = RobotState.TRAVEL;
+                        break;
                     case 4:
-                        Drivetrain.moveRobot(new Pose2D(new Vector(0, -7000) , 0), telemetry);
+                        Drivetrain.moveRobot(new Pose2D(new Vector(0, -9000) , 0), telemetry);
                         state = RobotState.TRAVEL;
                         break;
                     case 5:
@@ -200,20 +200,20 @@ public class BlueAutonomous extends LinearOpMode {
                         Drivetrain.moveRobot(new Pose2D(new Vector(0, 10000) , 0), telemetry);
                         break;
                     case 2:
-                        Drivetrain.moveRobot(new Pose2D(new Vector(0, 0) , -25), telemetry);
+                        Drivetrain.moveRobot(new Pose2D(new Vector(0, 0) , -30), telemetry);
                         break;
                     case 3:
-                        Drivetrain.moveRobot(new Pose2D(new Vector(0, 30000) , -25), telemetry);
+                        Drivetrain.moveRobot(new Pose2D(new Vector(0, 30000) , -30), telemetry);
                         break;
                     case 4:
-                        Drivetrain.moveRobot(new Pose2D(new Vector(0, -4000) , -25), telemetry);
+                        Drivetrain.moveRobot(new Pose2D(new Vector(0, -7000) , -30), telemetry);
                         break;
                     case 5:
                         state = RobotState.DEPLETE;
                         waitAuto(1000);
                         break;
                     case 6:
-                        Drivetrain.moveRobot(new Pose2D(new Vector(0, -6000) , -25), telemetry);
+                        Drivetrain.moveRobot(new Pose2D(new Vector(0, -8000) , -30), telemetry);
                         state = RobotState.TRAVEL;
                         break;
                     case 7:
@@ -346,7 +346,7 @@ public class BlueAutonomous extends LinearOpMode {
 
 
         Intake.operate(intakeState);
-        Elevator.operate(elevatorState, gamepad1.right_stick_y);
+        Elevator.operate(elevatorState, gamepad1.right_stick_y, 0);
         Claw.operate(clawState);
         Wrist.operate(wristState);
 
@@ -384,4 +384,3 @@ public class BlueAutonomous extends LinearOpMode {
         }
     }
 }
-

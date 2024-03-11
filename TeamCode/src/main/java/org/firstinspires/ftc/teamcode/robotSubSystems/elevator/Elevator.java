@@ -34,7 +34,7 @@ public class Elevator {
 
     private static double power = 0;
     private static ElevatorState lastWantedState = ElevatorState.INTAKE;
-    public static void operate(ElevatorState wantedState, double gamepadVal) {
+    public static void operate(ElevatorState wantedState, double gamepadVal, double secondGamepad) {
         if (gamepadVal == 0 && wantedState != lastWantedState) {
             switch (wantedState) {
                 case INTAKE:
@@ -67,8 +67,14 @@ public class Elevator {
         changeLevelPID.setWanted(wantedPos);
 
         power = changeLevelPID.update(getElevatorPos());
-        leftMotor.setPower(power);
-        rightMotor.setPower(power);
+
+        if (secondGamepad == 0) {
+            leftMotor.setPower(power);
+            rightMotor.setPower(power);
+        }else {
+            leftMotor.setPower(0.5 * secondGamepad);
+            rightMotor.setPower(0.5 * secondGamepad);
+        }
 
     }
     private static int encoderResetVal = 0;
