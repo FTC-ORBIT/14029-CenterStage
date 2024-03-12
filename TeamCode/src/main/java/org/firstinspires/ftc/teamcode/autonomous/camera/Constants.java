@@ -13,8 +13,8 @@ public final class Constants {
     public static Scalar redLowHSV = new Scalar(0 , 125 , 35);
     public static Scalar redHighHSV = new Scalar(90 , 255 , 255);
 
-    public static Scalar blueLowHSV = new Scalar(107 , 128,78);
-    public static Scalar blueHighHSV = new Scalar(117 , 217 , 143);
+    public static Scalar blueLowHSV = new Scalar(85 , 50 , 115);
+    public static Scalar blueHighHSV = new Scalar(130 , 180 , 255);
     //Scalar (color) constants
     public static Scalar Green = new Scalar(0 , 255 ,0);
     public static Scalar White = new Scalar(255 , 255 , 255);
