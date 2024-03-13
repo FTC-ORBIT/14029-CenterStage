@@ -32,7 +32,7 @@ public class PoseTracker {
 
 
     public static void update(){
-        encoders = new Vector(0, Drivetrain.getEncoderPos());
+        encoders = new Vector(-Intake.getEncoderPos(), Drivetrain.getEncoderPos());
 
         changed.x = encoders.x - lastXVAl;
         changed.y = encoders.y - lastYVAl;
@@ -57,6 +57,7 @@ public class PoseTracker {
     public static void resetPos(){
         pose = new Pose2D(new Vector(0,0),0);
         Drivetrain.resetEncoders();
+        Intake.resetEncoder();
 //        Gyro.resetGyro();
         Intake.resetEncoder();
         lastXVAl = 0;

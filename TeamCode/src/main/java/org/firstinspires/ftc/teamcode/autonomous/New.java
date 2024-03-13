@@ -1,11 +1,12 @@
 package org.firstinspires.ftc.teamcode.autonomous;
 
+
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import org.firstinspires.ftc.teamcode.RobotState;
+import org.firstinspires.ftc.teamcode.autonomous.camera.BluePipeline;
 import org.firstinspires.ftc.teamcode.autonomous.camera.Camera;
 import org.firstinspires.ftc.teamcode.autonomous.camera.ElementPosition;
-import org.firstinspires.ftc.teamcode.autonomous.camera.RedPipeline;
 import org.firstinspires.ftc.teamcode.robotSubSystems.claw.Claw;
 import org.firstinspires.ftc.teamcode.robotSubSystems.claw.ClawState;
 import org.firstinspires.ftc.teamcode.robotSubSystems.drivetrain.Drivetrain;
@@ -21,8 +22,8 @@ import org.firstinspires.ftc.teamcode.sensors.Gyro;
 import org.firstinspires.ftc.teamcode.utils.Pose2D;
 import org.firstinspires.ftc.teamcode.utils.Vector;
 
-@com.qualcomm.robotcore.eventloop.opmode.Autonomous(name = "red far")
-public class RedFarAutonomous extends LinearOpMode {
+@com.qualcomm.robotcore.eventloop.opmode.Autonomous(name = "new")
+public class New extends LinearOpMode {
 
     private static int actionNum = 1;
     private static final ElapsedTime timer = new ElapsedTime();
@@ -46,7 +47,6 @@ public class RedFarAutonomous extends LinearOpMode {
     ElementPosition elementPos = ElementPosition.LEFT;
 
 
-
     public void initRobot() {
         Gyro.init(hardwareMap);
         Drivetrain.init(hardwareMap);
@@ -57,10 +57,10 @@ public class RedFarAutonomous extends LinearOpMode {
 //        AprilTagDetector.runAprilTagDetection(this);
         Drivetrain.resetEncoders();
         PoseTracker.resetPos();
-        Camera.init(hardwareMap, true);
+        Camera.init(hardwareMap, false);
         hasStarted = true;
-        while (opModeInInit()){
-            telemetry.addData("element pos", RedPipeline.getElementPos());
+        while (opModeInInit()) {
+            telemetry.addData("element pos", BluePipeline.getElementPos());
             telemetry.update();
         }
     }
@@ -68,113 +68,43 @@ public class RedFarAutonomous extends LinearOpMode {
     public void operate() {
         actionNum = gamepad1.a ? 1 : actionNum;
         state = gamepad1.a ? RobotState.CLIMB : state;
-        if (state == RobotState.CLIMB){
+        if (state == RobotState.CLIMB) {
             state = RobotState.TRAVEL;
-            elementPos = RedPipeline.getElementPos();
+            elementPos = BluePipeline.getElementPos();
         }
 
-        switch (elementPos){
-            case LEFT:
-                switch (actionNum){
-                    case 1:
-                        Drivetrain.moveRobot(new Pose2D(new Vector(0,41000), 0), telemetry);
-                        telemetry.addData("posY", PoseTracker.getPose().getY());
-                        telemetry.addData("posX", PoseTracker.getPose().getX());
-                        telemetry.addData("angle", PoseTracker.getPose().getAngle());
-                        break;
-                    case 2:
-                        Drivetrain.moveRobot(new Pose2D(new Vector(0, 0) , -90), telemetry);
-                        break;
-                    case 3:
-                        state = RobotState.DEPLETE;
-                        waitAuto(1000);
-                        break;
-                    case 4:
-                        state = RobotState.TRAVEL;
-                        Drivetrain.driveByTime(-0.2);
-                        waitAuto(2000);
-                        break;
-                    case 5:
-                        Drivetrain.moveRobot(new Pose2D(new Vector(0,0), 0), telemetry);
-                        state = RobotState.TRAVEL;
-                        break;
-                }
+        switch (actionNum){
+            case 1:
+                Drivetrain.moveRobot(new Pose2D(new Vector(0, 20000) , 0), telemetry);
                 break;
-            case MIDDLE:
-                switch (actionNum){
-                    case 1:
-                        Drivetrain.moveRobot(new Pose2D(new Vector(0,39000), 0), telemetry);
-                        state = RobotState.TRAVEL;
-                        telemetry.addData("posY", PoseTracker.getPose().getY());
-                        telemetry.addData("posX", PoseTracker.getPose().getX());
-                        telemetry.addData("angle", PoseTracker.getPose().getAngle());
-                        break;
-                    case 2:
-                        Drivetrain.moveRobot(new Pose2D(new Vector(0,-1500), 0), telemetry);
-                    case 3:
-                        state = RobotState.DEPLETE;
-                        waitAuto(1500);
-                        break;
-                    case 4:
-                        Drivetrain.moveRobot(new Pose2D(new Vector(0, -7000) , 0), telemetry);
-                        state = RobotState.TRAVEL;
-                        break;
-                }
-                break;
-            case RIGHT:
-                switch (actionNum){
-                    case 1:
-                        Drivetrain.moveRobot(new Pose2D(new Vector(0, 10000) , 0), telemetry);
-                        break;
-                    case 2:
-                        Drivetrain.moveRobot(new Pose2D(new Vector(0, 0) , 25), telemetry);
-                        break;
-                    case 3:
-                        Drivetrain.moveRobot(new Pose2D(new Vector(0, 30000) , 25), telemetry);
-                        break;
-                    case 4:
-                        Drivetrain.moveRobot(new Pose2D(new Vector(0, -4000) , 25), telemetry);
-                        break;
-                    case 5:
-                        state = RobotState.DEPLETE;
-                        waitAuto(1000);
-                        break;
-                    case 6:
-                        Drivetrain.moveRobot(new Pose2D(new Vector(0, -6000) , 25), telemetry);
-                        state = RobotState.TRAVEL;
-                        break;
-                    case 7:
-                        Drivetrain.moveRobot(new Pose2D(new Vector(0, 0) , 0), telemetry);
-                        state = RobotState.TRAVEL;
-                        break;
-                }
+            case 2:
+                Drivetrain.moveRobot(new Pose2D(new Vector(20000, 0) , 0), telemetry);
                 break;
         }
 
 
-
-        if (state != lastState){
+        if (state != lastState) {
             firstTimeInIntake = true;
         }
-        switch (state){
+        switch (state) {
             case INTAKE:
-                if (firstTimeInIntake){
+                if (firstTimeInIntake) {
                     startIntakeStartTime = timer.milliseconds();
                     firstTimeInIntake = false;
                 }
-                if (timer.milliseconds() - startIntakeStartTime > 500){
+                if (timer.milliseconds() - startIntakeStartTime > 500) {
                     elevatorState = ElevatorState.INTAKE;
                 }
                 if (Elevator.getElevatorPos() < ElevatorConstance.moveBoxMaxPos) {
                     wristState = WristState.MIDDLE;
                 }
-                if (Elevator.getElevatorPos() < ElevatorConstance.moveClawMaxPos){
+                if (Elevator.getElevatorPos() < ElevatorConstance.moveClawMaxPos) {
                     clawState = ClawState.OPEN;
                     if (timer.milliseconds() - startIntakeStartTime > 400) {
                         intakeState = IntakeState.INTAKE;
                         wristState = WristState.INTAKE;
                     }
-                }else {
+                } else {
                     clawState = ClawState.CLOSED;
                     intakeState = IntakeState.STOP;
                 }
@@ -193,31 +123,31 @@ public class RedFarAutonomous extends LinearOpMode {
                 break;
             case TRAVEL:
                 firstTimeInTravel = lastState == RobotState.INTAKE;
-                if (firstTimeInTravel){
+                if (firstTimeInTravel) {
                     stopIntakeStartTime = timer.milliseconds();
                     firstTimeInTravel = false;
                     lastElevatorState = elevatorState;
                 }
                 clawState = ClawState.CLOSED;
-                if (timer.milliseconds() - stopIntakeStartTime < 1000){
+                if (timer.milliseconds() - stopIntakeStartTime < 1000) {
                     elevatorState = ElevatorState.INTAKE;
-                }else {
+                } else {
                     elevatorState = elevatorState == ElevatorState.INTAKE ? lastElevatorState : elevatorState;
                 }
-                if (timer.milliseconds() - stopIntakeStartTime > 600){
+                if (timer.milliseconds() - stopIntakeStartTime > 600) {
                     intakeState = IntakeState.STOP;
                 }
-                if (Elevator.getElevatorPos() > ElevatorConstance.moveBoxMinPos){
+                if (Elevator.getElevatorPos() > ElevatorConstance.moveBoxMinPos) {
                     wristState = WristState.DEPLETE;
-                }else if (timer.milliseconds() - stopIntakeStartTime > 300){
+                } else if (timer.milliseconds() - stopIntakeStartTime > 300) {
 //                    wristState = WristState.GROUND;
                     wristState = WristState.MIDDLE;
                 }
                 break;
             case DEPLETE:
-                if (elementPos == ElementPosition.MIDDLE){
+                if (elementPos == ElementPosition.MIDDLE) {
                     intakeState = IntakeState.DEPLETE_AUTO;
-                }else {
+                } else {
                     intakeState = IntakeState.DEPLETE_AUTO;
                 }
 //                wristState = WristState.INTAKE;
@@ -239,7 +169,7 @@ public class RedFarAutonomous extends LinearOpMode {
         Wrist.operate(wristState);
 
 
-        if (Drivetrain.isFinished){
+        if (Drivetrain.isFinished) {
             actionNum++;
             Drivetrain.isFinished = false;
             Drivetrain.breakMotors();
@@ -250,12 +180,13 @@ public class RedFarAutonomous extends LinearOpMode {
 
     private static double startTime;
     private static boolean hasStarted = true;
-    private static void waitAuto(int millis){
+
+    private static void waitAuto(int millis) {
         if (hasStarted) {
             startTime = timer.milliseconds();
             hasStarted = false;
         }
-        if (millis < timer.milliseconds() - startTime){
+        if (millis < timer.milliseconds() - startTime) {
             actionNum++;
             Drivetrain.breakMotors();
             hasStarted = true;

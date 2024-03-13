@@ -160,6 +160,8 @@ public class TeleOp14029 extends OpMode {
                 }
                 if (Elevator.getElevatorPos() > ElevatorConstance.moveBoxMinPos){
                     wristState = WristState.DEPLETE;
+                }else if (timer.milliseconds() - stopIntakeStartTime > 1500){
+                    wristState = WristState.MIDDLE;
                 }else if (timer.milliseconds() - stopIntakeStartTime > 300){
                     wristState = WristState.GROUND;
                 }

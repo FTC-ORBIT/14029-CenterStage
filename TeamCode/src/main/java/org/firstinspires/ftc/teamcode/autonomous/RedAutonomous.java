@@ -109,11 +109,11 @@ public class RedAutonomous extends LinearOpMode {
                         break;
                     case 8:
                         Drivetrain.breakMotors();
-                        waitAuto(1000);
+                        waitAuto(500);
                         state = RobotState.DROP;
                         break;
                     case 9:
-                        waitAuto(1000);
+                        waitAuto(500);
                         elevatorState = ElevatorState.LEVEL1;
                         break;
                     case 10:
@@ -124,7 +124,7 @@ public class RedAutonomous extends LinearOpMode {
                         state = RobotState.INTAKE;
                         break;
                     case 12:
-                        waitAuto(1000);
+                        waitAuto(500);
                         break;
                     case 13:
                         Drivetrain.moveRobot(new Pose2D(new Vector(0, -40000) , 0), telemetry);
@@ -171,7 +171,7 @@ public class RedAutonomous extends LinearOpMode {
                         break;
                     case 8:
                         Drivetrain.breakMotors();
-                        waitAuto(2000);
+                        waitAuto(500);
                         state = RobotState.DROP;
                         break;
                     case 9:
@@ -323,7 +323,8 @@ public class RedAutonomous extends LinearOpMode {
                 if (Elevator.getElevatorPos() > ElevatorConstance.moveBoxMinPos){
                     wristState = WristState.DEPLETE;
                 }else if (timer.milliseconds() - stopIntakeStartTime > 300){
-                    wristState = WristState.GROUND;
+//                    wristState = WristState.GROUND;
+                    wristState = WristState.MIDDLE;
                 }
                 break;
             case DEPLETE:

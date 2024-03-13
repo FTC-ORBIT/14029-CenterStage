@@ -38,6 +38,7 @@ public class Intake {
     private static boolean firstTimePressed = false;
     private static double startPressedTime = 0;
     private static double startTime = 0;
+    private static boolean isPressed = false;
 
 
     private static final ElapsedTime timer = new ElapsedTime();

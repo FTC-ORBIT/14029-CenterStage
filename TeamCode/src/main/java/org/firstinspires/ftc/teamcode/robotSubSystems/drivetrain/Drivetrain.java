@@ -70,35 +70,61 @@ public class Drivetrain {
     private static double lfPower = 0;
     private static double rfPower = 0;
 
-    public static void moveRobot(Pose2D wanted , Telemetry telemetry) {
+    public static void moveRobot(Pose2D wanted, Telemetry telemetry) {
 //        wanted.vector.rotate(Angle.wrapAngle0_360(Gyro.getAngle()));
-
 
 
         final double lfWanted = wanted.getY() + wanted.getX();
         final double rfWanted = wanted.getY() - wanted.getX();
 
-
-        final double lfCurrent = PoseTracker.getPose().getY() + PoseTracker.getPose().getX();
-        final double rfCurrent = PoseTracker.getPose().getY() - PoseTracker.getPose().getX();
-
+        double lfCurrent = 0;
+        double rfCurrent = 0;
 
 
-        final double lfError = lfWanted - lfCurrent;
-        final double rfError = rfWanted - rfCurrent;
+        if (wanted.getX() == 0) {
+
+            moveRobotPID = new PID(DrivetrainConstants.moveRobotKp, DrivetrainConstants.moveRobotKi, DrivetrainConstants.moveRobotKd, DrivetrainConstants.moveRobotKf, DrivetrainConstants.moveRobotIzone, DrivetrainConstants.moveRobotMaxSpeed, DrivetrainConstants.moveRobotMinSpeed);
+
+            lfCurrent = PoseTracker.getPose().getY();
+            rfCurrent = PoseTracker.getPose().getY();
 
 
+            final double lfError = lfWanted - lfCurrent;
+            final double rfError = rfWanted - rfCurrent;
 
-        if (lfError > rfError) {
-            moveRobotPID.setWanted(lfWanted);
-            lfPower = moveRobotPID.update(lfCurrent);
-            rfPower = (rfError / lfError) * lfPower;
+
+            if (lfError > rfError) {
+                moveRobotPID.setWanted(lfWanted);
+                lfPower = moveRobotPID.update(lfCurrent) ;
+                rfPower = (rfError / lfError) * lfPower;
+            } else {
+                moveRobotPID.setWanted(rfWanted);
+                rfPower = moveRobotPID.update(rfCurrent) ;
+                lfPower = (lfError / rfError) * rfPower;
+            }
+
         } else {
-            moveRobotPID.setWanted(rfWanted);
-            rfPower = moveRobotPID.update(rfCurrent);
-            lfPower = (lfError / rfError) * rfPower;
-        }
 
+            moveRobotPID = new PID(DrivetrainConstants.moveRobotSideKp, DrivetrainConstants.moveRobotSideKi, DrivetrainConstants.moveRobotSideKd, DrivetrainConstants.moveRobotSideKf, DrivetrainConstants.moveRobotSideIzone, DrivetrainConstants.moveRobotSideMaxSpeed, DrivetrainConstants.moveRobotSideMinSpeed);
+
+            lfCurrent = PoseTracker.getPose().getY() + PoseTracker.getPose().getX();
+            rfCurrent = PoseTracker.getPose().getY() - PoseTracker.getPose().getX();
+
+
+            final double lfError = lfWanted - lfCurrent;
+            final double rfError = rfWanted - rfCurrent;
+
+
+            if (lfError > rfError) {
+                moveRobotPID.setWanted(lfWanted);
+                lfPower = moveRobotPID.update(lfCurrent);
+                rfPower = (rfError / lfError) * lfPower;
+            } else {
+                moveRobotPID.setWanted(rfWanted);
+                rfPower = moveRobotPID.update(rfCurrent);
+                lfPower = (lfError / rfError) * rfPower;
+            }
+        }
 
 
 //        turn robot pid
@@ -121,33 +147,31 @@ public class Drivetrain {
 //            dtMotors[2].setPower(rfPower * 0.9);
 //            dtMotors[3].setPower(lfPower * 0.9);
 
-        if (wanted.getY() == 0 && wanted.getX() == 0){
+        if (wanted.getY() == 0 && wanted.getX() == 0) {
             isFinishedLf = true;
             isFinishedRf = true;
             lfPower = 0;
             rfPower = 0;
-        }else {
+        } else {
             isFinishedLf = Math.abs(lfWanted) - 300 < Math.abs(lfCurrent) && Math.abs(lfCurrent) < Math.abs(lfWanted) + 300;
             isFinishedRf = Math.abs(rfWanted) - 300 < Math.abs(rfCurrent) && Math.abs(rfCurrent) < Math.abs(rfWanted) + 300;
         }
 
 
-            PoseTracker.update();
+        PoseTracker.update();
 //        }else {
-            dtMotors[0].setPower(lfPower + rotationPower);
-            dtMotors[1].setPower(rfPower + rotationPower);
-            dtMotors[2].setPower(rfPower - rotationPower);
-            dtMotors[3].setPower(lfPower - rotationPower);
-            isFinishedTurning = (Math.abs(wanted.getAngle()) - 1.5 < Math.abs(-Gyro.getAngle()) && Math.abs(-Gyro.getAngle()) < Math.abs(wanted.getAngle()) + 1.5) && (Math.signum(wanted.getAngle()) == Math.signum(-Gyro.getAngle()) || wanted.getAngle() == 0);
-            telemetry.addData("angle", PoseTracker.getPose().getAngle());
-            telemetry.addData("wanted", wanted.getAngle());
+        dtMotors[0].setPower(lfPower + rotationPower);
+        dtMotors[1].setPower(rfPower + rotationPower);
+        dtMotors[2].setPower(rfPower - rotationPower);
+        dtMotors[3].setPower(lfPower - rotationPower);
+        isFinishedTurning = (Math.abs(wanted.getAngle()) - 1.5 < Math.abs(-Gyro.getAngle()) && Math.abs(-Gyro.getAngle()) < Math.abs(wanted.getAngle()) + 1.5) && (Math.signum(wanted.getAngle()) == Math.signum(-Gyro.getAngle()) || wanted.getAngle() == 0);
+        telemetry.addData("angle", PoseTracker.getPose().getAngle());
+        telemetry.addData("wanted", wanted.getAngle());
 //        }
 
 
-
-
         isFinished = isFinishedLf && isFinishedRf && isFinishedTurning;
-        if(isFinished){
+        if (isFinished) {
             breakMotors();
             resetEncoders();
             PoseTracker.resetPos();
@@ -155,7 +179,7 @@ public class Drivetrain {
 
     }
 
-    public static void driveByTime(double power){
+    public static void driveByTime(double power) {
         dtMotors[0].setPower(-power);
         dtMotors[1].setPower(-power);
         dtMotors[2].setPower(-power);
@@ -163,12 +187,11 @@ public class Drivetrain {
     }
 
 
-
     public static double getEncoderPos() {
         return dtMotors[3].getCurrentPosition();
     }
 
-    public static void resetEncoders(){
+    public static void resetEncoders() {
         dtMotors[3].setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         dtMotors[3].setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
     }
@@ -181,7 +204,9 @@ public class Drivetrain {
     }
 
 
-    public static double cmToTicks(double cm) {return cm * 65.19;}
+    public static double cmToTicks(double cm) {
+        return cm * 65.19;
+    }
 //    public double ticksToCm(double ticks) {
 //        return ticks * DrivetrainConstants.ticksToCM;
 //    }

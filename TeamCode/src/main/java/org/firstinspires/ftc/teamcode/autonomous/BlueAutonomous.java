@@ -323,7 +323,8 @@ public class BlueAutonomous extends LinearOpMode {
                 if (Elevator.getElevatorPos() > ElevatorConstance.moveBoxMinPos){
                     wristState = WristState.DEPLETE;
                 }else if (timer.milliseconds() - stopIntakeStartTime > 300){
-                    wristState = WristState.GROUND;
+//                    wristState = WristState.GROUND;
+                    wristState = WristState.MIDDLE;
                 }
                 break;
             case DEPLETE:
