@@ -15,7 +15,7 @@ public class ElevatorConstance {
     public static final int level2Pos = 1700;
     public static final int level3Pos = 1975;
     public static final int level4Pos = 2400;
-    public static final int autonomousPos = 1200;
+    public static final int autonomousPos = 1100;
 
 
     public static final int moveBoxMinPos = 400;
