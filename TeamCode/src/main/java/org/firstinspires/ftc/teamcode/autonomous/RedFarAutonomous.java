@@ -46,7 +46,6 @@ public class RedFarAutonomous extends LinearOpMode {
     ElementPosition elementPos = ElementPosition.LEFT;
 
 
-
     public void initRobot() {
         Gyro.init(hardwareMap);
         Drivetrain.init(hardwareMap);
@@ -59,7 +58,7 @@ public class RedFarAutonomous extends LinearOpMode {
         PoseTracker.resetPos();
         Camera.init(hardwareMap, true);
         hasStarted = true;
-        while (opModeInInit()){
+        while (opModeInInit()) {
             telemetry.addData("element pos", RedPipeline.getElementPos());
             telemetry.update();
         }
@@ -68,113 +67,246 @@ public class RedFarAutonomous extends LinearOpMode {
     public void operate() {
         actionNum = gamepad1.a ? 1 : actionNum;
         state = gamepad1.a ? RobotState.CLIMB : state;
-        if (state == RobotState.CLIMB){
+        if (state == RobotState.CLIMB) {
             state = RobotState.TRAVEL;
             elementPos = RedPipeline.getElementPos();
         }
 
-        switch (elementPos){
-            case LEFT:
-                switch (actionNum){
+        switch (elementPos) {
+            case RIGHT:
+                switch (actionNum) {
                     case 1:
-                        Drivetrain.moveRobot(new Pose2D(new Vector(0,41000), 0), telemetry);
+                        Drivetrain.moveRobot(new Pose2D(new Vector(0, 27000), 0), telemetry);
                         telemetry.addData("posY", PoseTracker.getPose().getY());
                         telemetry.addData("posX", PoseTracker.getPose().getX());
                         telemetry.addData("angle", PoseTracker.getPose().getAngle());
                         break;
                     case 2:
-                        Drivetrain.moveRobot(new Pose2D(new Vector(0, 0) , -90), telemetry);
+                        Drivetrain.moveRobot(new Pose2D(new Vector(0, 0), 45), telemetry);
                         break;
                     case 3:
                         state = RobotState.DEPLETE;
                         waitAuto(1000);
                         break;
                     case 4:
+                        Drivetrain.moveRobot(new Pose2D(new Vector(0, 9500), 45), telemetry);
+                        intakeState = IntakeState.DEPLETE;
                         state = RobotState.TRAVEL;
-                        Drivetrain.driveByTime(-0.2);
-                        waitAuto(2000);
                         break;
                     case 5:
-                        Drivetrain.moveRobot(new Pose2D(new Vector(0,0), 0), telemetry);
+                        Drivetrain.moveRobot(new Pose2D(new Vector(0, -25000), 45), telemetry);
+                        break;
+                    case 6:
+                        intakeState = IntakeState.STOP;
+                        Drivetrain.moveRobot(new Pose2D(new Vector(0, 0), -90), telemetry);
+                        break;
+                    case 7:
+                        Drivetrain.moveRobot(new Pose2D(new Vector(50000, 0), -90), telemetry);
                         state = RobotState.TRAVEL;
                         break;
+                    case 8:
+                        Drivetrain.moveRobot(new Pose2D(new Vector(0, 0), -90), telemetry);
+                        break;
+                    case 9:
+                        Drivetrain.moveRobot(new Pose2D(new Vector(0, -120000), -90), telemetry);
+                        break;
+                    case 10:
+                        Drivetrain.moveRobot(new Pose2D(new Vector(-39000, 0), -90), telemetry);
+                        elevatorState = ElevatorState.LEVEL1;
+                        break;
+                    case 11:
+                        Drivetrain.moveRobot(new Pose2D(new Vector(0, 0), -90), telemetry);
+                        break;
+                    case 12:
+                        Drivetrain.driveByTime(0.2);
+                        waitAuto(2500);
+                        break;
+                    case 13:
+                        waitAuto(500);
+                        state = RobotState.DROP;
+                        break;
+                    case 14:
+                        waitAuto(500);
+                        elevatorState = ElevatorState.LEVEL1;
+                        break;
+                    case 15:
+                        Drivetrain.moveRobot(new Pose2D(new Vector(0, 8000), -90), telemetry);
+                        break;
+                    case 16:
+                        waitAuto(2000);
+                        state = RobotState.INTAKE;
+                        break;
+                    case 17:
+                        Drivetrain.moveRobot(new Pose2D(new Vector(0, 0), 0), telemetry);
+                        break;
+                    case 18:
+                        Drivetrain.moveRobot(new Pose2D(new Vector(0, 10000), 0), telemetry);
+                        break;
+
+
                 }
                 break;
             case MIDDLE:
-                switch (actionNum){
+                switch (actionNum) {
                     case 1:
-                        Drivetrain.moveRobot(new Pose2D(new Vector(0,39000), 0), telemetry);
+                        Drivetrain.moveRobot(new Pose2D(new Vector(0, 29000), 0), telemetry);
                         state = RobotState.TRAVEL;
                         telemetry.addData("posY", PoseTracker.getPose().getY());
                         telemetry.addData("posX", PoseTracker.getPose().getX());
                         telemetry.addData("angle", PoseTracker.getPose().getAngle());
                         break;
                     case 2:
-                        Drivetrain.moveRobot(new Pose2D(new Vector(0,-1500), 0), telemetry);
-                    case 3:
-                        state = RobotState.DEPLETE;
-                        waitAuto(1500);
+                        Drivetrain.moveRobot(new Pose2D(new Vector(0, 0), 150), telemetry);
                         break;
-                    case 4:
-                        Drivetrain.moveRobot(new Pose2D(new Vector(0, -7000) , 0), telemetry);
+                    case 3:
+                        Drivetrain.moveRobot(new Pose2D(new Vector(0, -35000), 150), telemetry);
                         state = RobotState.TRAVEL;
                         break;
-                }
-                break;
-            case RIGHT:
-                switch (actionNum){
-                    case 1:
-                        Drivetrain.moveRobot(new Pose2D(new Vector(0, 10000) , 0), telemetry);
-                        break;
-                    case 2:
-                        Drivetrain.moveRobot(new Pose2D(new Vector(0, 0) , 25), telemetry);
-                        break;
-                    case 3:
-                        Drivetrain.moveRobot(new Pose2D(new Vector(0, 30000) , 25), telemetry);
-                        break;
                     case 4:
-                        Drivetrain.moveRobot(new Pose2D(new Vector(0, -4000) , 25), telemetry);
+                        Drivetrain.moveRobot(new Pose2D(new Vector(0, 0), 130), telemetry);
                         break;
                     case 5:
                         state = RobotState.DEPLETE;
                         waitAuto(1000);
                         break;
                     case 6:
-                        Drivetrain.moveRobot(new Pose2D(new Vector(0, -6000) , 25), telemetry);
+                        Drivetrain.moveRobot(new Pose2D(new Vector(0, 11500), 130), telemetry);
+                        state = RobotState.TRAVEL;
+                        intakeState = IntakeState.DEPLETE;
+                        break;
+                    case 7:
+                        Drivetrain.moveRobot(new Pose2D(new Vector(0, -19000), 130), telemetry);
+                        break;
+                    case 8:
+                        Drivetrain.moveRobot(new Pose2D(new Vector(0, 0), -90), telemetry);
+                        intakeState = IntakeState.STOP;
+                        break;
+                    case 9:
+                        Drivetrain.moveRobot(new Pose2D(new Vector(0, -130000), -90), telemetry);
+                        break;
+                    case 10:
+                        Drivetrain.moveRobot(new Pose2D(new Vector(-30000, 0), -90), telemetry);
+                        elevatorState = ElevatorState.LEVEL1;
+                        break;
+                    case 11:
+                        waitAuto(2500);
+                        Drivetrain.driveByTime(0.2);
+                        break;
+                    case 12:
+                        waitAuto(1500);
+                        state = RobotState.DROP;
+                        break;
+                    case 13:
+                        waitAuto(500);
+                        elevatorState = ElevatorState.LEVEL1;
+                        break;
+                    case 14:
+                        Drivetrain.moveRobot(new Pose2D(new Vector(0, 8000), -90), telemetry);
+                        break;
+                    case 15:
+                        state = RobotState.INTAKE;
+                        waitAuto(2000);
+                        break;
+                    case 16:
+                        Drivetrain.moveRobot(new Pose2D(new Vector(0, 0), 0), telemetry);
+                        break;
+                    case 17:
+                        Drivetrain.moveRobot(new Pose2D(new Vector(0, 10000), 0), telemetry);
+                        break;
+                }
+                break;
+            case LEFT:
+                switch (actionNum) {
+                    case 1:
+                        Drivetrain.moveRobot(new Pose2D(new Vector(0, 38000), 0), telemetry);
+                        break;
+                    case 2:
+                        Drivetrain.moveRobot(new Pose2D(new Vector(0, 0), -90), telemetry);
+                        break;
+                    case 3:
+                        state = RobotState.DEPLETE;
+                        waitAuto(1000);
+                        break;
+                    case 4:
+                        Drivetrain.moveRobot(new Pose2D(new Vector(0, 6000), -90), telemetry);
+                        state = RobotState.TRAVEL;
+                        intakeState = IntakeState.DEPLETE;
+                        break;
+                    case 5:
+                        Drivetrain.moveRobot(new Pose2D(new Vector(0, -3000), -90), telemetry);
+                        break;
+                    case 6:
+                        Drivetrain.moveRobot(new Pose2D(new Vector(30000, 0), -90), telemetry);
+                        intakeState = IntakeState.STOP;
                         state = RobotState.TRAVEL;
                         break;
                     case 7:
-                        Drivetrain.moveRobot(new Pose2D(new Vector(0, 0) , 0), telemetry);
+                        Drivetrain.moveRobot(new Pose2D(new Vector(0, 0), -90), telemetry);
                         state = RobotState.TRAVEL;
                         break;
+                    case 8:
+                        Drivetrain.moveRobot(new Pose2D(new Vector(0, -110000), -90), telemetry);
+                        break;
+                    case 9:
+                        Drivetrain.moveRobot(new Pose2D(new Vector(-26000, 0), -90), telemetry);
+                        elevatorState = ElevatorState.LEVEL1;
+                        break;
+                    case 10:
+                        Drivetrain.moveRobot(new Pose2D(new Vector(0, 0), -90), telemetry);
+                        break;
+                    case 11:
+                        waitAuto(2500);
+                        Drivetrain.driveByTime(0.2);
+                        break;
+                    case 12:
+                        state = RobotState.DROP;
+                        waitAuto(500);
+                        break;
+                    case 13:
+                        elevatorState = ElevatorState.LEVEL1;
+                        waitAuto(500);
+                        break;
+                    case 14:
+                        Drivetrain.moveRobot(new Pose2D(new Vector(0, 8000), -90), telemetry);
+                        break;
+                    case 15:
+                        state = RobotState.INTAKE;
+                        waitAuto(1000);
+                        break;
+                    case 16:
+                        Drivetrain.moveRobot(new Pose2D(new Vector(0, 0), 0), telemetry);
+                        break;
+                    case 17:
+                        Drivetrain.moveRobot(new Pose2D(new Vector(0, 5000), 0), telemetry);
+                        break;
+
                 }
                 break;
         }
 
 
-
-        if (state != lastState){
+        if (state != lastState) {
             firstTimeInIntake = true;
         }
-        switch (state){
+        switch (state) {
             case INTAKE:
-                if (firstTimeInIntake){
+                if (firstTimeInIntake) {
                     startIntakeStartTime = timer.milliseconds();
                     firstTimeInIntake = false;
                 }
-                if (timer.milliseconds() - startIntakeStartTime > 500){
+                if (timer.milliseconds() - startIntakeStartTime > 500) {
                     elevatorState = ElevatorState.INTAKE;
                 }
                 if (Elevator.getElevatorPos() < ElevatorConstance.moveBoxMaxPos) {
                     wristState = WristState.MIDDLE;
                 }
-                if (Elevator.getElevatorPos() < ElevatorConstance.moveClawMaxPos){
+                if (Elevator.getElevatorPos() < ElevatorConstance.moveClawMaxPos) {
                     clawState = ClawState.OPEN;
                     if (timer.milliseconds() - startIntakeStartTime > 400) {
-                        intakeState = IntakeState.INTAKE;
+//                        intakeState = IntakeState.INTAKE;
                         wristState = WristState.INTAKE;
                     }
-                }else {
+                } else {
                     clawState = ClawState.CLOSED;
                     intakeState = IntakeState.STOP;
                 }
@@ -193,31 +325,31 @@ public class RedFarAutonomous extends LinearOpMode {
                 break;
             case TRAVEL:
                 firstTimeInTravel = lastState == RobotState.INTAKE;
-                if (firstTimeInTravel){
+                if (firstTimeInTravel) {
                     stopIntakeStartTime = timer.milliseconds();
                     firstTimeInTravel = false;
                     lastElevatorState = elevatorState;
                 }
                 clawState = ClawState.CLOSED;
-                if (timer.milliseconds() - stopIntakeStartTime < 1000){
+                if (timer.milliseconds() - stopIntakeStartTime < 1000) {
                     elevatorState = ElevatorState.INTAKE;
-                }else {
+                } else {
                     elevatorState = elevatorState == ElevatorState.INTAKE ? lastElevatorState : elevatorState;
                 }
-                if (timer.milliseconds() - stopIntakeStartTime > 600){
+                if (timer.milliseconds() - stopIntakeStartTime > 600 && intakeState != IntakeState.DEPLETE) {
                     intakeState = IntakeState.STOP;
                 }
-                if (Elevator.getElevatorPos() > ElevatorConstance.moveBoxMinPos){
+                if (Elevator.getElevatorPos() > ElevatorConstance.moveBoxMinPos) {
                     wristState = WristState.DEPLETE;
-                }else if (timer.milliseconds() - stopIntakeStartTime > 300){
+                } else if (timer.milliseconds() - stopIntakeStartTime > 300) {
 //                    wristState = WristState.GROUND;
                     wristState = WristState.MIDDLE;
                 }
                 break;
             case DEPLETE:
-                if (elementPos == ElementPosition.MIDDLE){
+                if (elementPos == ElementPosition.MIDDLE) {
                     intakeState = IntakeState.DEPLETE_AUTO;
-                }else {
+                } else {
                     intakeState = IntakeState.DEPLETE_AUTO;
                 }
 //                wristState = WristState.INTAKE;
@@ -239,7 +371,7 @@ public class RedFarAutonomous extends LinearOpMode {
         Wrist.operate(wristState);
 
 
-        if (Drivetrain.isFinished){
+        if (Drivetrain.isFinished) {
             actionNum++;
             Drivetrain.isFinished = false;
             Drivetrain.breakMotors();
@@ -250,14 +382,16 @@ public class RedFarAutonomous extends LinearOpMode {
 
     private static double startTime;
     private static boolean hasStarted = true;
-    private static void waitAuto(int millis){
+
+    private static void waitAuto(int millis) {
         if (hasStarted) {
             startTime = timer.milliseconds();
             hasStarted = false;
         }
-        if (millis < timer.milliseconds() - startTime){
+        if (millis < timer.milliseconds() - startTime) {
             actionNum++;
             Drivetrain.breakMotors();
+            Drivetrain.resetEncoders();
             hasStarted = true;
         }
     }
