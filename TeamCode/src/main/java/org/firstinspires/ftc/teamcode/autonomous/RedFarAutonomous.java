@@ -198,7 +198,7 @@ public class RedFarAutonomous extends LinearOpMode {
                         break;
                     case 13:
                         waitAuto(500);
-                        elevatorState = ElevatorState.LEVEL1;
+                        elevatorState = ElevatorState.LEVEL2;
                         break;
                     case 14:
                         Drivetrain.moveRobot(new Pose2D(new Vector(0, 8000), -90), telemetry);

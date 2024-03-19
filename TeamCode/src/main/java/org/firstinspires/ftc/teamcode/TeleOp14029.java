@@ -191,6 +191,7 @@ public class TeleOp14029 extends OpMode {
         telemetry.addData("pos", PoseTracker.getPose().vector);
 
         telemetry.addData("time", timer.milliseconds());
+        telemetry.addData("gyro", Gyro.getAngle());
 
         Drivetrain.operate(new Vector(gamepad1.left_stick_x, -gamepad1.left_stick_y), gamepad1.right_trigger - gamepad1.left_trigger);
         Intake.operate(intakeState);
