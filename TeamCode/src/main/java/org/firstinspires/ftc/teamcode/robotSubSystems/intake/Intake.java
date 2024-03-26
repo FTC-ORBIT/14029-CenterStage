@@ -30,8 +30,8 @@ public class Intake {
 
     public static void servoTest(Gamepad gamepad) {
 //        if(touchSensor.isPressed()) {intakeServo.setPosition(IntakeConstance.intakeServoOpenPos);}
-        if (gamepad.a) {intakeServo.setPosition(IntakeConstance.intakeServoMiddlePos);}
-        if (gamepad.b) {intakeServo.setPosition(IntakeConstance.intakeServoClosedPos);}
+        if (gamepad.a) {intakeServo.setPosition(IntakeConstants.intakeServoMiddlePos);}
+        if (gamepad.b) {intakeServo.setPosition(IntakeConstants.intakeServoClosedPos);}
     }
 
     private static boolean firstTimeInIntake = true;
@@ -49,7 +49,7 @@ public class Intake {
         switch (state){
             case INTAKE:
                 if (firstTimeInIntake){
-                    intakeServo.setPosition(IntakeConstance.intakeServoMiddlePos);
+                    intakeServo.setPosition(IntakeConstants.intakeServoMiddlePos);
                     firstTimePressed = true;
                     firstTimeInIntake = false;
                     startTime = timer.milliseconds();
@@ -61,7 +61,7 @@ public class Intake {
                 if (firstTimePressed){
                     startPressedTime = timer.milliseconds();}
                 if (timer.milliseconds() - startPressedTime > 500){
-                    intakeServo.setPosition(IntakeConstance.intakeServoOpenPos);
+                    intakeServo.setPosition(IntakeConstants.intakeServoOpenPos);
                 }
                 upperBar.setPower(1);
                 sideWheels.setPower(1);
@@ -73,7 +73,7 @@ public class Intake {
             case STOP:
                 upperBar.setPower(0);
                 sideWheels.setPower(0);
-                intakeServo.setPosition(IntakeConstance.intakeServoClosedPos);
+                intakeServo.setPosition(IntakeConstants.intakeServoClosedPos);
                 break;
             case DEPLETE_AUTO:
                 upperBar.setPower(0.4);

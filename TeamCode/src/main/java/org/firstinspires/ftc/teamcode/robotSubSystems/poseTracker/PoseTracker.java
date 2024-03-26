@@ -47,9 +47,9 @@ public class PoseTracker {
 
         pose.setX((float) (pose.getX() + changed.x));
         pose.setY((float) (pose.getY() + changed.y));
-        pose.setAngle(-Angle.wrapAngle0_360(Gyro.getAngle()));
+        pose.setAngle(-Gyro.getAngle());
 
-        lastAngle = Gyro.getAngle();
+        lastAngle = -Gyro.getAngle();
 
 
     }

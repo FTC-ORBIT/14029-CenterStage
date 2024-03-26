@@ -59,6 +59,7 @@ public class RedAutonomous extends LinearOpMode {
         PoseTracker.resetPos();
         Camera.init(hardwareMap, true);
         hasStarted = true;
+        state = RobotState.CLIMB;
         while (opModeInInit()) {
             telemetry.addData("element pos", RedPipeline.getElementPos());
             telemetry.update();
@@ -71,6 +72,7 @@ public class RedAutonomous extends LinearOpMode {
         if (state == RobotState.CLIMB) {
             state = RobotState.TRAVEL;
             elementPos = RedPipeline.getElementPos();
+            actionNum = 1;
         }
 
         switch (elementPos) {
@@ -111,7 +113,7 @@ public class RedAutonomous extends LinearOpMode {
                         break;
                     case 9:
                         waitAuto(1500);
-                        Drivetrain.driveByTime(0.2);
+                        Drivetrain.driveByTime(0.3);
                         break;
                     case 10:
                         Drivetrain.breakMotors();
@@ -170,10 +172,10 @@ public class RedAutonomous extends LinearOpMode {
                         break;
                     case 7:
 //                        actionNum++;
-                        Drivetrain.moveRobot(new Pose2D(new Vector(2500, 0), -90), telemetry);
+                        Drivetrain.moveRobot(new Pose2D(new Vector(4000, 0), -90), telemetry);
                         break;
                     case 8:
-                        Drivetrain.driveByTime(0.2);
+                        Drivetrain.driveByTime(0.3);
                         waitAuto(2000);
                         break;
                     case 9:
@@ -232,7 +234,7 @@ public class RedAutonomous extends LinearOpMode {
                         elevatorState = ElevatorState.AUTONOMOUS_POS;
                         break;
                     case 9:
-                        Drivetrain.driveByTime(0.2);
+                        Drivetrain.driveByTime(0.3);
                         waitAuto(2000);
                         break;
                     case 10:

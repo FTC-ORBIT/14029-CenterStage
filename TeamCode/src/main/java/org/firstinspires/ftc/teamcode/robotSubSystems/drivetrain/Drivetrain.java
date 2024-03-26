@@ -91,7 +91,7 @@ public class Drivetrain {
         telemetry.addData("posY", PoseTracker.getPose().getY());
         telemetry.addData("posX", PoseTracker.getPose().getX());
 
-        final boolean isFinishedTurning;
+        boolean isFinishedTurning = false;
         boolean isFinishedLf = false;
         boolean isFinishedRf = false;
 
@@ -185,9 +185,11 @@ public class Drivetrain {
         PoseTracker.update();
 //        }else {
 
-        telemetry.addData("angle", PoseTracker.getPose().getAngle());
+        telemetry.addData("angle", Gyro.getAngle());
         telemetry.addData("wanted", wanted.getAngle());
 //        }
+
+
 
 
         isFinished = isFinishedLf && isFinishedRf && isFinishedTurning;

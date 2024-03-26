@@ -113,7 +113,7 @@ public class TeleOp14029 extends OpMode {
                     startIntakeStartTime = timer.milliseconds();
                     firstTimeInIntake = false;
                 }
-                if (timer.milliseconds() - startIntakeStartTime > 500){
+                if (timer.milliseconds() - startIntakeStartTime > 250){
                     elevatorState = ElevatorState.INTAKE;
                 }
                 if (Elevator.getElevatorPos() < ElevatorConstance.moveBoxMaxPos) {
